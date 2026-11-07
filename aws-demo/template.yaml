@@ -1,0 +1,75 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: 'ITBA Serverless Computing demo - short lived public teaching API'
+Globals:
+  Function:
+    Runtime: python3.12
+    Timeout: 8
+    MemorySize: 128
+Resources:
+  RegistrationsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: registration_id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: registration_id
+          KeyType: HASH
+  DemoApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      StageName: '$default'
+      CorsConfiguration:
+        AllowOrigins: ['*']
+        AllowMethods: ['GET', 'POST', 'OPTIONS']
+        AllowHeaders: ['content-type']
+        MaxAge: 300
+      DefaultRouteSettings:
+        ThrottlingBurstLimit: 30
+        ThrottlingRateLimit: 15
+  DemoFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: app.lambda_handler
+      ReservedConcurrentExecutions: 8
+      Environment:
+        Variables:
+          REGISTRATIONS_TABLE: !Ref RegistrationsTable
+      Policies:
+        - Statement:
+            - Effect: Allow
+              Action:
+                - dynamodb:PutItem
+                - dynamodb:GetItem
+                - dynamodb:Scan
+              Resource: !GetAtt RegistrationsTable.Arn
+      Events:
+        Health:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref DemoApi
+            Path: /health
+            Method: GET
+        Register:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref DemoApi
+            Path: /registrations
+            Method: POST
+        List:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref DemoApi
+            Path: /registrations
+            Method: GET
+Outputs:
+  ApiUrl:
+    Description: 'Paste this URL without trailing slash in slide 15'
+    Value: !Sub 'https://${DemoApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}'
+  DynamoTable:
+    Value: !Ref RegistrationsTable
+  LambdaFunction:
+    Value: !Ref DemoFunction

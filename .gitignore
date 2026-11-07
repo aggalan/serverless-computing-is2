@@ -1,0 +1,11 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+.aws-sam/
+.env
+.env.*
+!.env.example
+*.pem
+.DS_Store
