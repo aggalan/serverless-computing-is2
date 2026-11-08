@@ -281,3 +281,161 @@ Este documento registra los cambios de contenido acordados durante la revisión,
 - `docs/GUION.md`: explicación oral y consecuencias de negocio.
 - `docs/FUENTES.md`: documentación oficial de ciclo de vida y concurrencia.
 - `docs/CAMBIOS.md`: registro y justificación del cambio.
+
+## Diapositiva 08 — Precisión sobre idempotencia
+
+### 1. Efecto de negocio y respuesta técnica
+
+```diff
+- Mismo resultado / sin duplicar efecto
++ Un solo efecto / sin duplicar la operación
+```
+
+**Razón:** una operación idempotente evita duplicar su efecto observable, pero no exige que todos los intentos devuelvan la misma respuesta. En la demo, por ejemplo, la creación inicial puede responder `201` y el reintento `200`, aunque ambos dejen un único registro. La nueva redacción evita equiparar idempotencia con respuestas idénticas.
+
+### 2. Espaciado del cierre
+
+**Razón:** se agrupó la oración final en un único elemento para impedir que el contenedor flexible separara visualmente el texto, la palabra en negrita y el punto. Es una corrección de presentación sin cambio conceptual.
+
+### Archivos sincronizados
+
+- `index.html`: resultado visible de los dos intentos en la diapositiva 8.
+- `docs/CAMBIOS.md`: registro y justificación del cambio.
+
+## Diapositiva 09 — Atributos de calidad
+
+### 1. Separación correcta de los atributos
+
+```diff
+- Rendimiento: elasticidad frente a picos.
++ Rendimiento: paralelismo en tareas independientes.
+
+- Portabilidad: bloques gestionados aceleran entrega.
++ Portabilidad: lógica aislable mediante adaptadores.
+```
+
+**Razón:** la elasticidad pertenece principalmente a escalabilidad, no garantiza mejores tiempos de respuesta. Acelerar la entrega corresponde a mantenibilidad o time-to-market, no a portabilidad. Las nuevas celdas describen oportunidades relacionadas directamente con cada atributo.
+
+### 2. Oportunidades y riesgos más concretos
+
+```diff
+- Capacidad bajo demanda
++ Capacidad ajustada a la demanda
+
+- Infraestructura gestionada
++ Recuperación del entorno gestionada
+
+- Controles integrados
++ Menos infraestructura que parchear
+
+- Integraciones y debugging distribuido
++ Integraciones y diagnóstico distribuido
+```
+
+**Razón:** se reemplazaron expresiones vagas o mezcladas con otros atributos. La recuperación de un entorno no garantiza por sí sola la continuidad del negocio; reducir hosts disminuye superficie operativa, pero el equipo conserva permisos, eventos, secretos e integraciones.
+
+### 3. Decisión orientada al negocio
+
+```diff
+- Menos gestión de infraestructura ≠ menos responsabilidad de arquitectura.
++ Serverless reduce operación, pero desplaza riesgos hacia la configuración, las integraciones y la dependencia del proveedor.
+```
+
+**Razón:** el nuevo cierre mantiene la responsabilidad arquitectónica y nombra concretamente dónde aparecen los riesgos. Así la tabla sirve para priorizar atributos del negocio, no para presentar serverless como una mejora universal.
+
+### Archivos sincronizados
+
+- `index.html`: oportunidades, riesgos, cierre y notas de la diapositiva 9.
+- `docs/GUION.md`: explicación oral y criterio de decisión por atributos.
+- `docs/CAMBIOS.md`: registro y justificación del cambio.
+
+## Diapositiva 10 — Comparación de alternativas
+
+### 1. Criterios simétricos
+
+```diff
+- Cada tarjeta mezclaba definiciones, casos de uso, operación y costos sin el mismo orden.
++ Las tres alternativas muestran: cuándo conviene, qué controla el equipo y cuál es el trade-off.
+```
+
+**Razón:** una comparación sólo ayuda a decidir si evalúa las alternativas con criterios equivalentes. La nueva estructura permite contrastar VM, contenedor administrado y FaaS sin favorecer una por la forma de presentar la información.
+
+### 2. Precisiones conceptuales
+
+```diff
+- VM: capacidad contratada.
++ VM: el equipo administra el sistema operativo y la capacidad.
+
+- Contenedor: aplicaciones persistentes.
++ Contenedor: servicios completos o de ejecución continua.
+```
+
+**Razón:** las máquinas virtuales también pueden pagarse por uso y autoescalar; la diferencia relevante es cuánto administra el equipo. “Persistente” podía confundirse con persistencia de estado, cuando la intención era describir servicios de ejecución más continua que una función.
+
+### 3. Neutralidad visual
+
+```diff
+- La tarjeta de funciones estaba resaltada.
++ Las tres tarjetas tienen el mismo peso visual.
+```
+
+**Razón:** la diapositiva enseña a comparar antes de elegir. Resaltar FaaS sugería una recomendación previa incompatible con el enfoque de decisión orientada al negocio.
+
+### 4. Cierre de negocio
+
+```diff
+- Elegir la alternativa que cumple SLO y minimiza costo total/riesgo.
++ Elegir la alternativa que cumple los objetivos de servicio con un costo total y un riesgo aceptables.
+```
+
+**Razón:** se eliminó la barra y se evitó asumir que costo y riesgo siempre pueden minimizarse simultáneamente. El guion explica SLO como objetivo de servicio y TCO como costo total de propiedad, incluyendo desarrollo y operación.
+
+### Archivos sincronizados
+
+- `index.html`: tarjetas, neutralidad visual, cierre y notas de la diapositiva 10.
+- `docs/GUION.md`: comparación oral y definición de SLO y TCO.
+- `docs/CAMBIOS.md`: registro y justificación del cambio.
+
+## Diapositiva 11 — Precio de uso y costo total
+
+### 1. Fórmula independiente del proveedor
+
+```diff
+- Nº ejecuciones × duración × memoria/CPU × tarifa
+- + solicitudes / eventos facturables ≠ TCO
++ Nº ejecuciones × duración × recursos asignados × tarifa
++ + solicitudes o eventos facturables ≠ COSTO TOTAL (TCO)
+```
+
+**Razón:** memoria y CPU no se facturan del mismo modo en todos los proveedores. “Recursos asignados” conserva el carácter genérico de la fórmula. Expandir TCO evita depender de una sigla no explicada en la diapositiva.
+
+### 2. Perfiles de carga comparables
+
+```diff
+- Carga esporádica: infraestructura inactiva / elasticidad requerida.
++ Carga esporádica: demanda irregular / capacidad ociosa pagada.
+
+- Carga sostenida: uso constante / previsibilidad.
++ Carga sostenida: demanda predecible / uso constante.
+```
+
+**Razón:** las etiquetas anteriores mezclaban una propiedad de la infraestructura con una necesidad arquitectónica. Las nuevas describen el perfil del negocio y la consecuencia económica desde el lado del consumidor.
+
+### 3. Riesgo de costo variable
+
+**Razón:** el guion ahora explicita que tráfico inesperado, reintentos, errores o exceso de logs pueden aumentar la factura. Pagar por uso elimina parte de la capacidad ociosa, pero no garantiza gasto menor ni predecible.
+
+### 4. Lenguaje visible
+
+```diff
+- storage / free tiers
++ almacenamiento / niveles gratuitos
+```
+
+**Razón:** se reemplazaron anglicismos innecesarios sin eliminar términos técnicos relevantes.
+
+### Archivos sincronizados
+
+- `index.html`: fórmula, perfiles de carga, aclaración inferior y notas de la diapositiva 11.
+- `docs/GUION.md`: explicación oral del TCO y riesgo de variación.
+- `docs/CAMBIOS.md`: registro y justificación del cambio.
