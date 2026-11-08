@@ -56,7 +56,7 @@ Recién acá aparecen los vendors. AWS Lambda, Azure Functions, Google Cloud Run
 
 ## 13. AWS: del patrón abstracto a servicios reales. — 00:45 (acum. 09:20)
 
-Primera diapositiva de AWS. Ahora el ejemplo real es HTTP API Gateway → Lambda → DynamoDB + CloudWatch, no S3. Mostrar responsabilidades y atributos: API Gateway recibe el tráfico, Lambda escala cómputo efímero, DynamoDB persiste estado e implementa unicidad mediante escritura condicional. AWS SAM es IaC. No presentar esto como definición general de Serverless; la teoría fue 100% vendor-neutral.
+Primera diapositiva de AWS. El ejemplo real traduce el patrón a HTTP API Gateway → Lambda → DynamoDB, con CloudWatch, IAM y AWS SAM como capacidades de soporte. API Gateway recibe el tráfico; Lambda ejecuta la lógica de negocio; DynamoDB conserva el estado y permite implementar idempotencia mediante escritura condicional; CloudWatch aporta logs y métricas; IAM limita los permisos entre servicios; SAM describe la infraestructura como código. La necesidad concreta es registrar inscripciones y evitar duplicados ante reintentos. No presentar esta arquitectura como definición general de serverless: es una implementación particular para la demo.
 
 ## 14. Por qué esta arquitectura para la demo. — 00:40 (acum. 10:00)
 

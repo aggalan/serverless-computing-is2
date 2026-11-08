@@ -439,3 +439,71 @@ Este documento registra los cambios de contenido acordados durante la revisión,
 - `index.html`: fórmula, perfiles de carga, aclaración inferior y notas de la diapositiva 11.
 - `docs/GUION.md`: explicación oral del TCO y riesgo de variación.
 - `docs/CAMBIOS.md`: registro y justificación del cambio.
+
+## Diapositiva 12 — Alcance y elección de vendors
+
+### 1. Alcance visible
+
+```diff
+- 02 / ECOSISTEMA · VENDORS
++ 02 / ECOSISTEMA · VENDORS FAAS
+```
+
+**Razón:** se conserva el término “vendors” del diseño original y se aclara que las tarjetas se concentran principalmente en ofertas FaaS, sin convertir la etiqueta en una explicación extensa.
+
+### 2. Criterios de elección
+
+```diff
+- No son intercambiables 1:1: varían runtimes, triggers, cuotas, red, observabilidad, seguridad y pricing.
++ Elegir según ecosistema existente, regiones y cumplimiento, latencia, costos, límites y dependencia del proveedor.
+```
+
+**Razón:** “1:1” describía una diferencia técnica, pero no indicaba cómo tomar la decisión. El nuevo cierre transforma esas diferencias en criterios concretos para el consumidor y reemplaza anglicismos innecesarios.
+
+### 3. Resaltado y transición
+
+**Razón:** no se agregó una etiqueta que identifique anticipadamente al proveedor de la demo. La transición hacia AWS se mantiene para la diapositiva siguiente, sin adelantarla en el panorama de vendors.
+
+### Archivos sincronizados
+
+- `index.html`: etiqueta de sección y cierre visible de la diapositiva 12.
+- `docs/CAMBIOS.md`: registro y justificación del cambio.
+## Diapositiva 13 — Responsabilidades de la arquitectura AWS
+
+### Texto visible
+
+```diff
+- AWS Lambda: Registra y consulta
++ AWS Lambda: Ejecuta la lógica de negocio
+
+- DynamoDB: Put condicional
++ DynamoDB: Estado e idempotencia
+
+- CloudWatch: Logs, errores e invocaciones
++ CloudWatch: Logs y métricas de ejecución
+
+- IAM: Permisos mínimos para la tabla
++ IAM: Permisos mínimos entre servicios
+
+- Caso concreto: inscripciones sintéticas a un evento. Un trigger HTTP también es un evento que activa la función.
++ Caso concreto: registrar inscripciones y evitar duplicados cuando una solicitud se reintenta.
+```
+
+### Razón
+
+- Se describe la responsabilidad arquitectónica de Lambda en lugar de limitarla a dos operaciones de la demo.
+- Se reemplaza el detalle de implementación `Put condicional` por el atributo que habilita en el caso: conservar estado e implementar idempotencia. La escritura condicional queda explicada en el guion.
+- Se precisa el alcance de CloudWatch como fuente de logs y métricas de ejecución.
+- Se amplía IAM a su función real de controlar permisos entre los servicios involucrados, no solamente el acceso a DynamoDB.
+- El caso inferior conecta la arquitectura con una necesidad concreta y prepara la demostración de reintentos sin duplicados.
+- Se mantienen el título, el diagrama y la composición visual porque la diapositiva ya cumple su función de traducir el patrón conceptual a servicios AWS.
+
+### Guion
+
+Se actualizó para explicar las responsabilidades de cada servicio, la necesidad concreta del caso y el carácter particular de esta implementación, sin presentarla como definición general de serverless.
+
+### Archivos sincronizados
+
+- `index.html`
+- `docs/GUION.md`
+- `docs/CAMBIOS.md`

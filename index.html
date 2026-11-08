@@ -398,20 +398,20 @@ strong{font-weight:700;color:var(--ink)}
 <div class="panel v3-vendor"><div class="vendor-tag">ENTERPRISE INTEGRATION / FaaS</div><h3>Azure Functions</h3><p>Triggers, bindings e integración con servicios de Azure. Planes de hosting distintos.</p></div>
 <div class="panel v3-vendor"><div class="vendor-tag">CLOUD + CONTAINERS / FaaS</div><h3>Google Cloud Run functions</h3><p>Funciones HTTP o eventos mediante Cloud Run / Eventarc y CloudEvents.</p></div>
 <div class="panel v3-vendor orange"><div class="vendor-tag">EDGE RUNTIME</div><h3>Cloudflare Workers</h3><p>JavaScript/TypeScript y Web APIs cerca del usuario, con modelo de ejecución diferente.</p></div>
-</div><div class="v3-micro">No son intercambiables 1:1: varían runtimes, triggers, cuotas, red, observabilidad, seguridad y pricing.</div>
+</div><div class="v3-micro">Elegir según ecosistema existente, regiones y cumplimiento, latencia, costos, límites y dependencia del proveedor.</div>
 </div></div>
   <div class="folio"><span>VENDORS · ESTA 01:00 · ACUM. 08:35</span><span class="progress"><i style="width:63.2%"></i></span><span class="page">12 / 19</span></div>
-</section><section class="slide" data-time="45" data-notes="Primera diapositiva de AWS. Ahora el ejemplo real es HTTP API Gateway → Lambda → DynamoDB + CloudWatch, no S3. Mostrar responsabilidades y atributos: API Gateway recibe el tráfico, Lambda escala cómputo efímero, DynamoDB persiste estado e implementa unicidad mediante escritura condicional. AWS SAM es IaC. No presentar esto como definición general de Serverless; la teoría fue 100% vendor-neutral.">
+</section><section class="slide" data-time="45" data-notes="Primera diapositiva de AWS. El ejemplo real traduce el patrón a HTTP API Gateway → Lambda → DynamoDB, con CloudWatch, IAM y AWS SAM como capacidades de soporte. API Gateway recibe el tráfico; Lambda ejecuta la lógica de negocio; DynamoDB conserva el estado y permite implementar idempotencia mediante escritura condicional; CloudWatch aporta logs y métricas; IAM limita los permisos entre servicios; SAM describe la infraestructura como código. La necesidad concreta es registrar inscripciones y evitar duplicados ante reintentos. No presentar esta arquitectura como definición general de serverless: es una implementación particular para la demo.">
   <div class="brandbar"><span class="brandmark">◉ CLOUD / SERVERLESS LAB</span><span class="brandright">ITBA · INGENIERÍA DE SOFTWARE II · 2026</span></div>
   <div class="content"><div class="eyebrow reveal">03 / IMPLEMENTACIÓN · AWS</div><h2 class="reveal">AWS: del patrón abstracto a servicios reales.</h2><div class="main reveal">
 <div class="v3-flow" style="margin:44px 0 32px">
 <div class="v3-node"><div class="v3-tinylabel">FRONTEND</div><h3>HTML</h3><p>Botones de la presentación</p></div><span class="v3-chevron">›</span>
 <div class="v3-node"><div class="v3-tinylabel">ENTRY POINT</div><h3>API Gateway</h3><p>HTTP API + CORS</p></div><span class="v3-chevron">›</span>
-<div class="v3-node em"><div class="v3-tinylabel">CÓMPUTO</div><h3>AWS Lambda</h3><p>Registra y consulta</p></div><span class="v3-chevron">›</span>
-<div class="v3-node"><div class="v3-tinylabel">ESTADO</div><h3>DynamoDB</h3><p>Put condicional</p></div>
+<div class="v3-node em"><div class="v3-tinylabel">CÓMPUTO</div><h3>AWS Lambda</h3><p>Ejecuta la lógica de negocio</p></div><span class="v3-chevron">›</span>
+<div class="v3-node"><div class="v3-tinylabel">ESTADO</div><h3>DynamoDB</h3><p>Estado e idempotencia</p></div>
 </div>
-<div class="v3-band"><div class="panel"><h3>CloudWatch</h3><p>Logs, errores e invocaciones</p></div><div class="panel feature"><h3>IAM</h3><p>Permisos mínimos para la tabla</p></div><div class="panel"><h3>AWS SAM</h3><p>Infraestructura como código</p></div></div>
-<div class="v3-micro">Caso concreto: inscripciones sintéticas a un evento. Un trigger HTTP también es un evento que activa la función.</div>
+<div class="v3-band"><div class="panel"><h3>CloudWatch</h3><p>Logs y métricas de ejecución</p></div><div class="panel feature"><h3>IAM</h3><p>Permisos mínimos entre servicios</p></div><div class="panel"><h3>AWS SAM</h3><p>Infraestructura como código</p></div></div>
+<div class="v3-micro">Caso concreto: registrar inscripciones y evitar duplicados cuando una solicitud se reintenta.</div>
 </div></div>
   <div class="folio"><span>AWS · ESTA 00:45 · ACUM. 09:20</span><span class="progress"><i style="width:68.4%"></i></span><span class="page">13 / 19</span></div>
 </section><section class="slide" data-time="40" data-notes="Comparativa de decisión: elegir HTTP API + Lambda porque se puede llamar desde la presentación sin cambiar de ventana; DynamoDB desacopla estado y soporta put condicional atómico para idempotencia; CloudWatch permite enseñar observabilidad. Cuatro acciones didácticas: register, list, retry y burst. No inferir que una ráfaga de 12 requests demuestra escalabilidad o performance. El endpoint está abierto sólo para demo, sin datos sensibles y se debe destruir luego.">
