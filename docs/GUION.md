@@ -12,27 +12,27 @@ Abrimos con la definición de Serverless Computing como modelo de abstracción d
 
 ## 02. Capacidad fija, demanda variable. — 00:35 (acum. 00:55)
 
-Presentar el patrón de carga variable como motivación, sin nombrar nube comercial alguna. La infraestructura fija exige un equilibrio entre costo de capacidad ociosa y riesgo ante picos. Serverless ofrece escalado y aprovisionamiento gestionado, pero hay límites y otras fuentes de costo. El gráfico es ilustrativo.
+Toda empresa debe decidir cuánta capacidad mantener disponible. Si reserva demasiado, paga recursos que no utiliza. Si reserva poco, un pico puede aumentar la latencia, producir errores y afectar ventas o usuarios. El gráfico contrasta demanda variable con capacidad reservada, pero es una simplificación: las VMs y los contenedores también pueden usar autoscaling. La pregunta final abre la transición hacia la diapositiva siguiente sin introducir todavía la solución: «¿Y si no tuviéramos que reservar la capacidad de antemano?». Eso no elimina la infraestructura; cambia quién la aprovisiona y administra. Ahí aparece el modelo serverless.
 
 ## 03. Serverless no significa «sin servidores». — 00:35 (acum. 01:30)
 
-Definición apoyada en CNCF. No desaparecen los servidores ni la responsabilidad de ingeniería: cambia la frontera de operaciones. Evitar confundir serverless con gratuidad, ausencia de administración o universalmente coste efectivo.
+Serverless es un modelo de desarrollo y ejecución en el que el equipo despliega código o utiliza servicios sin aprovisionar ni administrar directamente los servidores subyacentes. Los servidores siguen existiendo: cambia la frontera de responsabilidad. La plataforma administra hosts, sistema operativo, aprovisionamiento y recuperación del entorno de ejecución. El equipo conserva código, datos, permisos, seguridad, observabilidad y resiliencia. Recuperar el runtime no garantiza la continuidad del negocio. La decisión reduce carga operativa a cambio de menos control directo y mayor dependencia; no implica gratuidad ni disponibilidad automática.
 
-## 04. Tres formas de construir sin gestionar servidores. — 00:40 (acum. 02:10)
+## 04. Tres modalidades comunes. Distintas cosas para delegar. — 00:40 (acum. 02:10)
 
-Explicar FaaS (la plataforma invoca funciones), BaaS (backend administrado) y contenedores serverless (abstracción del host pero empaquetado como contenedor). Esta es una distinción conceptual, no nombres de productos. La cátedra debe ver investigación más allá de Lambda.
+No existe una taxonomía universal de exactamente tres formas; estas son modalidades comunes y combinables. Con FaaS desplegamos lógica propia como funciones, útil para tareas independientes y demanda irregular. Con BaaS consumimos capacidades estándar —como autenticación, datos o mensajería— para acelerar la entrega, aceptando menos control y mayor dependencia. Con contenedores serverless desplegamos una aplicación más completa y conservamos mayor control sobre frameworks y runtime sin administrar hosts. No todo servicio administrado es serverless: la decisión es qué construir, qué consumir y cuánto control delegar.
 
-## 05. Event-driven: la ejecución nace del evento. — 00:45 (acum. 02:55)
+## 05. En FaaS, un evento activa la lógica de negocio. — 00:45 (acum. 02:55)
 
-El modelo orientado a eventos es muy frecuente en FaaS pero no es obligatorio para todas las modalidades serverless. Distinguir invocación sincrónica de entrega asíncrona; la segunda puede tener reintentos, duplicados o llegada fuera de orden según contrato del emisor. Disparadores temporizados también son posibles.
+En FaaS, un hecho del negocio se representa como un evento que activa lógica bajo demanda. Conservamos ambas miradas: un pedido confirmado, archivo recibido o vencimiento alcanzado es el hecho; HTTP, un mensaje, un archivo o un timer es la entrada o trigger técnico. La función ejecuta solamente la lógica necesaria y produce un resultado: responder, persistir datos o emitir otro evento. Si la invocación es sincrónica, el usuario espera y pesan latencia y disponibilidad. Si es asíncrona, desacopla y absorbe picos, pero introduce reintentos, duplicados y consistencia eventual. Una ejecución programada resuelve tareas periódicas sin mantener un proceso activo. La demo usa HTTP sincrónico y después repite la solicitud para mostrar idempotencia.
 
-## 06. Arquitectura de referencia, independiente del vendor. — 00:40 (acum. 03:35)
+## 06. La función es solo una parte de la solución. — 00:40 (acum. 03:35)
 
-Esta es la arquitectura genérica: productor de eventos, punto de entrada, función y persistencia externa. No es una receta única: una función puede dispararse directamente desde storage sin gateway. Explicar atributos transversales: seguridad, observabilidad y resiliencia. Es un patrón abstracto para evitar mezclar teoría con proveedores.
+Desde la diapositiva anterior hacemos un zoom deliberado en FaaS porque es la modalidad que utiliza la demo; no afirmamos que esta arquitectura represente todo serverless. La función ejecuta una tarea acotada, pero una solución real también necesita mecanismos de entrada y coordinación, persistencia externa e integraciones que completen el proceso de negocio. La plataforma opera parte de la infraestructura, mientras el equipo todavía diseña seguridad, observabilidad y resiliencia. El patrón sigue siendo independiente del proveedor y sus componentes pueden variar según el caso.
 
-## 07. El runtime escala; la latencia cambia. — 00:50 (acum. 04:25)
+## 07. Escalar bajo demanda puede agregar latencia. — 00:50 (acum. 04:25)
 
-Explicar ciclo de vida genérico en FaaS: init, invocación, posible reutilización y nuevos entornos para concurrencia. Cold start ocurre cuando se requiere entorno nuevo, y no afecta igual a todos los proveedores o planes. El escalado puede ser muy rápido pero no infinito; dependen cuotas, memoria, downstream y concurrencia.
+Separar dos situaciones. Si una solicitud llega después de otra, la plataforma puede reutilizar un entorno ya preparado y evitar una nueva inicialización; la reutilización no está garantizada. Si varias solicitudes llegan simultáneamente y no hay capacidad disponible, la plataforma crea entornos adicionales y algunas atraviesan INIT antes de ejecutar. Ese tiempo adicional es un cold start. Para el negocio, la ventaja es absorber picos sin reservar capacidad permanente; el trade-off es una latencia menos predecible. Mitigarla mediante capacidad preinicializada suele aumentar el costo. Es un esquema conceptual de FaaS, no una medición ni una afirmación idéntica para todos los proveedores. El escalado también está condicionado por cuotas y por la capacidad de bases de datos, APIs y otros servicios.
 
 ## 08. El estado persiste fuera de la función. — 00:40 (acum. 05:05)
 
