@@ -289,6 +289,33 @@ strong{font-weight:700;color:var(--ink)}
 .svl-decisions .panel.feature .svl-num{color:var(--signal)}
 .svl-mini{margin-top:26px;padding:21px 27px;border:1px solid rgba(199,255,86,.42);border-left:5px solid var(--signal);background:rgba(34,55,45,.65);border-radius:7px;font:500 26px/1.3 var(--body)}
 
+
+/* === V5: VISUAL EXECUTION LIFECYCLE AND VENDOR LOCK-IN === */
+.v5-flow{display:flex;align-items:stretch;gap:14px}
+.v5-step{flex:1;min-width:0;min-height:258px;padding:27px 24px}
+.v5-step .v5-number{font:700 20px var(--mono);letter-spacing:.07em;color:var(--signal);display:block;margin-bottom:18px}
+.v5-step h3{font-size:34px;line-height:1.12;margin-bottom:15px}
+.v5-step p{font-size:24px;line-height:1.35}
+.v5-arrow{font:700 46px var(--mono);color:var(--signal);align-self:center;flex:0 0 26px}
+.v5-responsibilities{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:25px}
+.v5-responsibilities .panel{padding:26px 29px;min-height:149px}
+.v5-responsibilities .panel h3{font-size:29px;margin-bottom:12px}
+.v5-responsibilities .panel p{font-size:25px;line-height:1.32}
+.v5-disclaimer{font:500 22px/1.35 var(--mono);color:#bbd3d2;margin-top:25px}
+.v5-lockgrid{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+.v5-lockpanel{padding:27px 29px;min-height:460px}
+.v5-locklabel{font:700 20px var(--mono);letter-spacing:.08em;display:block;margin-bottom:22px;color:var(--warn)}
+.v5-locklabel.good{color:var(--signal)}
+.v5-lock-block{border:1px solid #59767b;background:#0d2630;border-radius:9px;padding:22px 20px;text-align:center;font:600 25px/1.23 var(--body)}
+.v5-lock-block.good{border-color:rgba(199,255,86,.63);background:rgba(58,82,49,.38)}
+.v5-lock-arrow{height:43px;display:flex;align-items:center;justify-content:center;font:700 34px var(--mono);color:var(--aqua)}
+.v5-lock-interactions{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.v5-lock-interactions .v5-lock-block{font-size:22px;min-height:74px;padding:18px 12px}
+.v5-lock-impact{font:500 23px/1.3 var(--body);color:#b6d5d5;margin-top:18px}
+.v5-lock-impact b{color:var(--ink)}
+.v5-lock-footer{margin-top:23px;border:1px solid rgba(199,255,86,.43);border-left:6px solid var(--signal);border-radius:8px;background:rgba(33,58,42,.48);padding:20px 25px;font:500 24px/1.3 var(--body)}
+.v5-lock-source{font:500 19px/1.25 var(--mono);color:#86b3b6;margin-top:14px}
+
 </style></head>
 <body><div class="deck-viewport"><main class="deck-stage" id="stage"><section class="slide cover" data-time="20" data-notes="Abrimos con la definición de Serverless Computing como modelo de abstracción de infraestructura. La exposición se divide deliberadamente: primero teoría completamente independiente de proveedores, después un panorama comparado de vendors y finalmente AWS como caso concreto para la prueba de concepto. La cátedra exige justificar decisiones de arquitectura y atributos de calidad.">
   <div class="brandbar"><span class="brandmark">◉ CLOUD / SERVERLESS LAB</span><span class="brandright">ITBA · INGENIERÍA DE SOFTWARE II · 2026</span></div><div class="giant-circle"></div>
@@ -298,7 +325,7 @@ strong{font-weight:700;color:var(--ink)}
 <p class="desc reveal">Un <strong>modelo de ejecución</strong>. Varias implementaciones.<br>Una decisión de arquitectura orientada al negocio.</p>
 <div class="rule-caption reveal"><span>01 FUNDAMENTOS · 02 VENDORS · 03 IMPLEMENTACIÓN</span><span>10′ TEORÍA + 5′ DEMO TÉCNICA</span></div>
 </div>
-  <div class="folio"><span>FUNDAMENTOS · ESTA 00:20 · ACUM. 00:20</span><span class="progress"><i style="width:2.2%"></i></span><span class="page">01 / 21</span></div>
+  <div class="folio"><span>FUNDAMENTOS · ESTA 00:20 · ACUM. 00:20</span><span class="progress"><i style="width:2.2%"></i></span><span class="page">01 / 22</span></div>
 </section><section class="slide" data-time="30" data-notes="Presentar el patrón de carga variable como motivación, sin nombrar todavía una solución. Toda organización debe equilibrar el costo de capacidad ociosa con el riesgo de degradar el servicio ante picos. El gráfico contrasta demanda variable con capacidad reservada, pero no implica que la elasticidad sea exclusiva de serverless: las VMs y los contenedores también pueden autoescalar. La diferencia se desarrollará en las diapositivas siguientes: serverless delega al proveedor una parte mayor del aprovisionamiento y la gestión de capacidad, a cambio de otras restricciones y costos.">
   <div class="brandbar"><span class="brandmark">◉ CLOUD / SERVERLESS LAB</span><span class="brandright">ITBA · INGENIERÍA DE SOFTWARE II · 2026</span></div>
   <div class="content"><div class="eyebrow reveal">01 / FUNDAMENTOS · MOTIVACIÓN</div><h2 class="reveal">Capacidad fija, demanda variable.</h2><div class="main reveal">
@@ -315,7 +342,7 @@ strong{font-weight:700;color:var(--ink)}
 <div class="panel feature"><span class="kicker">Dilema clásico</span><h3>¿Cuánta infraestructura reservar?</h3><p style="margin-top:25px">Si sobredimensionamos, pagamos capacidad ociosa.</p><p style="margin-top:24px">Si subdimensionamos, se degrada el servicio.</p><div class="line"></div><p style="color:var(--signal)">¿Y si no tuviéramos que reservarla de antemano?</p></div>
 </div><div class="v3-micro">Gráfico conceptual, no resultados medidos.</div>
 </div></div>
-  <div class="folio"><span>FUNDAMENTOS · ESTA 00:30 · ACUM. 00:50</span><span class="progress"><i style="width:5.6%"></i></span><span class="page">02 / 21</span></div>
+  <div class="folio"><span>FUNDAMENTOS · ESTA 00:30 · ACUM. 00:50</span><span class="progress"><i style="width:5.6%"></i></span><span class="page">02 / 22</span></div>
 </section><section class="slide" data-time="30" data-notes="Definición apoyada en el whitepaper de CNCF y en el modelo de responsabilidad compartida. No desaparecen los servidores ni la responsabilidad de ingeniería: cambia la frontera de operaciones. El proveedor administra los hosts, el sistema operativo subyacente, el aprovisionamiento del runtime y la recuperación del entorno de ejecución ante fallas; el equipo conserva la responsabilidad sobre código, datos, permisos, resiliencia de la aplicación, observabilidad y decisiones de costo. Recuperar el runtime no garantiza la continuidad del proceso de negocio. Evitar confundir serverless con gratuidad, ausencia de administración o disponibilidad automática de toda la aplicación.">
   <div class="brandbar"><span class="brandmark">◉ CLOUD / SERVERLESS LAB</span><span class="brandright">ITBA · INGENIERÍA DE SOFTWARE II · 2026</span></div>
   <div class="content"><div class="eyebrow reveal">01 / FUNDAMENTOS · DEFINICIÓN</div><h2 class="reveal">Serverless no significa «sin servidores».</h2><div class="main reveal">
@@ -324,7 +351,7 @@ strong{font-weight:700;color:var(--ink)}
 <div class="panel orange" style="min-height:400px"><span class="kicker" style="color:var(--warn)">El equipo sigue decidiendo</span><div class="v3-bullet"><span>→</span>Código, datos y permisos</div><div class="v3-bullet"><span>→</span>Resiliencia, calidad y observabilidad</div><div class="v3-bullet"><span>→</span>Costos, cuotas y dependencia del proveedor</div></div>
 </div><div class="v3-callout"><strong>Definición:</strong> modelo de desarrollo y ejecución en el que el equipo despliega código o utiliza servicios sin aprovisionar ni administrar directamente los servidores subyacentes.</div>
 </div></div>
-  <div class="folio"><span>FUNDAMENTOS · ESTA 00:30 · ACUM. 01:20</span><span class="progress"><i style="width:8.9%"></i></span><span class="page">03 / 21</span></div>
+  <div class="folio"><span>FUNDAMENTOS · ESTA 00:30 · ACUM. 01:20</span><span class="progress"><i style="width:8.9%"></i></span><span class="page">03 / 22</span></div>
 </section><section class="slide" data-time="35" data-notes="Presentar tres modalidades comunes, no una taxonomía exhaustiva ni opciones excluyentes. FaaS sirve para lógica propia dividida en unidades pequeñas y activadas por eventos; BaaS permite consumir capacidades estándar sin construirlas ni operar su infraestructura; los contenedores serverless conservan una unidad de despliegue más completa y mayor control sobre frameworks y runtime, sin administrar hosts o clusters. No todo servicio administrado es serverless. La decisión consiste en elegir qué construir, qué consumir y cuánto control delegar; una aplicación puede combinar las tres modalidades.">
   <div class="brandbar"><span class="brandmark">◉ CLOUD / SERVERLESS LAB</span><span class="brandright">ITBA · INGENIERÍA DE SOFTWARE II · 2026</span></div>
   <div class="content"><div class="eyebrow reveal">01 / FUNDAMENTOS · MODALIDADES</div><h2 class="reveal">Tres modalidades comunes. Distintas cosas para delegar.</h2><div class="main reveal">
@@ -334,27 +361,29 @@ strong{font-weight:700;color:var(--ink)}
 <div class="panel orange"><div class="v3-numb">03</div><h3>Contenedores serverless</h3><p>Aplicaciones en contenedores sin administrar hosts. Conservan más control sobre frameworks y runtime.</p><div class="line"></div><span class="tag">Desplegás: una aplicación</span></div>
 </div><div class="v3-callout">No son opciones excluyentes: una misma aplicación puede combinar las tres.</div>
 </div></div>
-  <div class="folio"><span>FUNDAMENTOS · ESTA 00:35 · ACUM. 01:55</span><span class="progress"><i style="width:12.8%"></i></span><span class="page">04 / 21</span></div>
-</section><section class="slide" data-time="35" data-notes="Mapa conceptual de los tipos de cargas y capacidades del ecosistema serverless. Separar CÓMPUTO (funciones, contenedores para servicios y jobs que terminan) de servicios complementarios (orquestación, eventos, datos y autenticación). Un job puede ejecutarse en un contenedor serverless; no son tecnologías excluyentes ni una taxonomía oficial. Ninguna modalidad garantiza escala a cero o cobro cero en reposo: depende de la configuración y del servicio. CNCF define serverless como abstracción de aprovisionamiento y operación, no sólo como FaaS. La arquitectura real combina varias piezas.">
+  <div class="folio"><span>FUNDAMENTOS · ESTA 00:35 · ACUM. 01:55</span><span class="progress"><i style="width:12.8%"></i></span><span class="page">04 / 22</span></div>
+</section><section class="slide" data-time="30" data-notes="Describir el modelo general en cuatro pasos, independientemente del vendor: el equipo entrega código, una imagen o un job y configura recursos; aparece una solicitud, evento o necesidad de trabajo; la plataforma asigna o reutiliza capacidad; el proceso se ejecuta y produce un resultado. La plataforma puede mantener instancias disponibles, escalar por demanda o dar paso a una ejecución finita. No todos los servicios son event-driven, ni garantizan escala a cero: un contenedor que atiende una API puede mantener capacidad activa. El equipo sigue a cargo de lógica, datos, permisos y SLO; el proveedor administra hosts y aprovisionamiento según la oferta. Conectar con la siguiente diapositiva: ahora profundizamos en un caso particular, FaaS.">
   <div class="brandbar"><span class="brandmark">◉ CLOUD / SERVERLESS LAB</span><span class="brandright">ITBA · INGENIERÍA DE SOFTWARE II · 2026</span></div>
-  <div class="content"><div class="eyebrow reveal">01 / FUNDAMENTOS · MAPA DEL ECOSISTEMA</div><h2 class="reveal">Serverless es más que ejecutar funciones.</h2>
-    <div class="main reveal" style="margin-top:31px">
-      <div class="svl-head">CÓMPUTO · DIFERENTES CICLOS DE EJECUCIÓN</div>
-      <div class="svl-grid">
-        <div class="panel feature"><span class="svl-num">01 / FUNCIÓN</span><h3>FaaS</h3><p>Una tarea se activa por un evento o request y entrega un resultado. Ideal para operaciones acotadas.</p></div>
-        <div class="panel"><span class="svl-num">02 / SERVICIO</span><h3>Contenedor serverless</h3><p>Una API o aplicación completa con su runtime y framework, sin administrar hosts.</p></div>
-        <div class="panel orange"><span class="svl-num">03 / EJECUCIÓN FINITA</span><h3>Job / Batch</h3><p>Proceso por lotes que comienza, ejecuta trabajo y termina; puede usar contenedores serverless.</p></div>
+  <div class="content"><div class="eyebrow reveal">01 / FUNDAMENTOS · MECANISMO</div><h2 class="reveal">Del despliegue a la ejecución.</h2>
+    <div class="main reveal" style="margin-top:43px">
+      <div class="v5-flow">
+        <div class="panel v5-step"><span class="v5-number">01 / DEFINICIÓN</span><h3>Desplegar</h3><p>El equipo entrega código, un contenedor o un job y configura sus requisitos.</p></div>
+        <div class="v5-arrow">›</div>
+        <div class="panel v5-step"><span class="v5-number">02 / DEMANDA</span><h3>Activar</h3><p>Llega una solicitud, un evento o el momento de ejecutar trabajo.</p></div>
+        <div class="v5-arrow">›</div>
+        <div class="panel v5-step feature"><span class="v5-number">03 / PLATAFORMA</span><h3>Asignar capacidad</h3><p>El proveedor aprovisiona o reutiliza recursos según el servicio.</p></div>
+        <div class="v5-arrow">›</div>
+        <div class="panel v5-step"><span class="v5-number">04 / RESULTADO</span><h3>Ejecutar</h3><p>La aplicación procesa la carga, responde o persiste información.</p></div>
       </div>
-      <div class="svl-head" style="margin-top:21px">CAPACIDADES COMPLEMENTARIAS · NO SON CÓMPUTO POR SÍ MISMAS</div>
-      <div class="svl-lower">
-        <div class="panel"><h3>Integración y workflows</h3><p>Eventos, colas y orquestación coordinan servicios y gestionan flujos.</p></div>
-        <div class="panel"><h3>BaaS, datos y autenticación</h3><p>Se consumen como capacidades administradas y se combinan con el cómputo.</p></div>
+      <div class="v5-responsibilities">
+        <div class="panel"><h3>Responsabilidad del equipo</h3><p>Lógica, datos, permisos, integración y objetivos de servicio.</p></div>
+        <div class="panel feature"><h3>Responsabilidad de la plataforma</h3><p>Hosts, aprovisionamiento y capacidad según el modelo elegido.</p></div>
       </div>
-      <div class="svl-foot">Las categorías se combinan; el modelo de escalado y facturación varía según el servicio.</div>
+      <div class="v5-disclaimer">Escalar a cero y pagar solo por invocación no son propiedades universales de serverless.</div>
     </div>
   </div>
-  <div class="folio"><span>FUNDAMENTOS · ESTA 00:35 · ACUM. 02:30</span><span class="progress"><i style="width:16.7%"></i></span><span class="page">05 / 21</span></div>
-</section><section class="slide" data-time="40" data-notes="En FaaS, un hecho del negocio se representa como un evento que activa lógica bajo demanda. Mantener ambos vocabularios: pedido confirmado, archivo recibido o vencimiento alcanzado son hechos del negocio; HTTP, una cola, storage o un scheduler son entradas o triggers técnicos. La decisión sincrónica o asíncrónica afecta al consumidor: en la primera el usuario espera y pesan latencia y disponibilidad; la segunda desacopla y absorbe picos, pero puede introducir reintentos, duplicados y consistencia eventual. La demo usa el caso sincrónico HTTP: API Gateway activa Lambda; luego se repite la solicitud para mostrar idempotencia. El modelo event-driven es frecuente en FaaS, no obligatorio para todo serverless.">
+  <div class="folio"><span>FUNDAMENTOS · ESTA 00:30 · ACUM. 02:25</span><span class="progress"><i style="width:16.1%"></i></span><span class="page">05 / 22</span></div>
+</section><section class="slide" data-time="35" data-notes="En FaaS, un hecho del negocio se representa como un evento que activa lógica bajo demanda. Mantener ambos vocabularios: pedido confirmado, archivo recibido o vencimiento alcanzado son hechos del negocio; HTTP, una cola, storage o un scheduler son entradas o triggers técnicos. La decisión sincrónica o asíncrónica afecta al consumidor: en la primera el usuario espera y pesan latencia y disponibilidad; la segunda desacopla y absorbe picos, pero puede introducir reintentos, duplicados y consistencia eventual. La demo usa el caso sincrónico HTTP: API Gateway activa Lambda; luego se repite la solicitud para mostrar idempotencia. El modelo event-driven es frecuente en FaaS, no obligatorio para todo serverless.">
   <div class="brandbar"><span class="brandmark">◉ CLOUD / SERVERLESS LAB</span><span class="brandright">ITBA · INGENIERÍA DE SOFTWARE II · 2026</span></div>
   <div class="content"><div class="eyebrow reveal">01 / FUNDAMENTOS · EVENTOS</div><h2 class="reveal">En FaaS, un evento activa la lógica de negocio.</h2><div class="main reveal">
 <div class="v3-flow" style="margin:45px 0 55px">
@@ -366,8 +395,8 @@ strong{font-weight:700;color:var(--ink)}
 <div class="v3-three"><div class="v3-muted-bg"><strong>Sincrónica</strong><div class="v3-body">El usuario espera la respuesta. Importan la latencia y la disponibilidad.</div></div><div class="v3-muted-bg"><strong>Asíncrona</strong><div class="v3-body">Desacopla y absorbe picos, pero introduce reintentos, duplicados y consistencia eventual.</div></div><div class="v3-muted-bg"><strong>Programada</strong><div class="v3-body">Ejecuta tareas periódicas sin mantener un proceso activo.</div></div></div>
 </div>
 </div>
-  <div class="folio"><span>FUNDAMENTOS · ESTA 00:40 · ACUM. 03:10</span><span class="progress"><i style="width:21.1%"></i></span><span class="page">06 / 21</span></div>
-</section><section class="slide" data-time="35" data-notes="Desde la diapositiva anterior hacemos un zoom deliberado en FaaS, porque es la modalidad que utiliza la demo. Esta no es una arquitectura universal de todo serverless. En una solución basada en funciones, la función ejecuta una tarea acotada, pero necesita mecanismos de entrada y coordinación, persistencia externa e integraciones para completar el proceso de negocio. La plataforma opera parte de la infraestructura; el equipo todavía diseña seguridad, observabilidad y resiliencia. El esquema sigue siendo independiente del proveedor y sus componentes pueden variar según el caso.">
+  <div class="folio"><span>FUNDAMENTOS · ESTA 00:35 · ACUM. 03:00</span><span class="progress"><i style="width:20.0%"></i></span><span class="page">06 / 22</span></div>
+</section><section class="slide" data-time="30" data-notes="Desde la diapositiva anterior hacemos un zoom deliberado en FaaS, porque es la modalidad que utiliza la demo. Esta no es una arquitectura universal de todo serverless. En una solución basada en funciones, la función ejecuta una tarea acotada, pero necesita mecanismos de entrada y coordinación, persistencia externa e integraciones para completar el proceso de negocio. La plataforma opera parte de la infraestructura; el equipo todavía diseña seguridad, observabilidad y resiliencia. El esquema sigue siendo independiente del proveedor y sus componentes pueden variar según el caso.">
   <div class="brandbar"><span class="brandmark">◉ CLOUD / SERVERLESS LAB</span><span class="brandright">ITBA · INGENIERÍA DE SOFTWARE II · 2026</span></div>
   <div class="content"><div class="eyebrow reveal">01 / FUNDAMENTOS · ZOOM EN FAAS</div><h2 class="reveal">La función es solo una parte de la solución.</h2><div class="main reveal">
 <div class="columns c40" style="margin-top:28px">
@@ -377,8 +406,8 @@ strong{font-weight:700;color:var(--ink)}
 <div class="v3-band"><div class="panel"><h3>Observabilidad transversal</h3><p>Logs, métricas, trazas, alarmas</p></div><div class="panel feature"><h3>Seguridad transversal</h3><p>Identidad, permisos mínimos y cifrado</p></div><div class="panel"><h3>Resiliencia transversal</h3><p>Reintentos, DLQ y backpressure</p></div></div>
 <div class="v3-micro">Patrón conceptual para soluciones basadas en FaaS. No describe todas las modalidades serverless.</div>
 </div></div>
-  <div class="folio"><span>FUNDAMENTOS · ESTA 00:35 · ACUM. 03:45</span><span class="progress"><i style="width:25.0%"></i></span><span class="page">07 / 21</span></div>
-</section><section class="slide" data-time="45" data-notes="Separar dos situaciones. En una solicitud posterior, la plataforma puede reutilizar un entorno ya preparado y evitar una nueva inicialización; esa reutilización es posible, no garantizada. En un pico simultáneo, si no hay capacidad disponible, la plataforma crea entornos adicionales y algunas solicitudes atraviesan INIT antes de ejecutar. Ese tiempo adicional es un cold start. La decisión de negocio intercambia capacidad elástica sin reserva permanente por una latencia menos predecible; técnicas como capacidad preinicializada reducen el riesgo pero suelen aumentar el costo. Es un patrón conceptual de FaaS, no una afirmación idéntica para todos los proveedores o planes. El escalado también depende de cuotas y de servicios aguas abajo.">
+  <div class="folio"><span>FUNDAMENTOS · ESTA 00:30 · ACUM. 03:30</span><span class="progress"><i style="width:23.3%"></i></span><span class="page">07 / 22</span></div>
+</section><section class="slide" data-time="40" data-notes="Separar dos situaciones. En una solicitud posterior, la plataforma puede reutilizar un entorno ya preparado y evitar una nueva inicialización; esa reutilización es posible, no garantizada. En un pico simultáneo, si no hay capacidad disponible, la plataforma crea entornos adicionales y algunas solicitudes atraviesan INIT antes de ejecutar. Ese tiempo adicional es un cold start. La decisión de negocio intercambia capacidad elástica sin reserva permanente por una latencia menos predecible; técnicas como capacidad preinicializada reducen el riesgo pero suelen aumentar el costo. Es un patrón conceptual de FaaS, no una afirmación idéntica para todos los proveedores o planes. El escalado también depende de cuotas y de servicios aguas abajo.">
   <div class="brandbar"><span class="brandmark">◉ CLOUD / SERVERLESS LAB</span><span class="brandright">ITBA · INGENIERÍA DE SOFTWARE II · 2026</span></div>
   <div class="content"><div class="eyebrow reveal">01 / FUNDAMENTOS · ZOOM EN FAAS</div><h2 class="reveal">Escalar bajo demanda puede agregar latencia.</h2><div class="main reveal">
 <div class="runtime-scenarios">
@@ -387,7 +416,7 @@ strong{font-weight:700;color:var(--ink)}
 </div>
 <div class="v3-callout"><strong>Decisión:</strong> escala según la demanda, pero algunas solicitudes tardan más. Mantener capacidad lista reduce esa demora y aumenta el costo.</div><div class="v3-micro">Esquema conceptual. El escalado también depende de cuotas y de la capacidad de otros servicios.</div>
 </div></div>
-  <div class="folio"><span>FUNDAMENTOS · ESTA 00:45 · ACUM. 04:30</span><span class="progress"><i style="width:30.0%"></i></span><span class="page">08 / 21</span></div>
+  <div class="folio"><span>FUNDAMENTOS · ESTA 00:40 · ACUM. 04:10</span><span class="progress"><i style="width:27.8%"></i></span><span class="page">08 / 22</span></div>
 </section><section class="slide" data-time="35" data-notes="Las funciones deben tratarse como efímeras desde el punto de vista de persistencia: no confiar en RAM ni filesystem temporal para estado compartido. Idempotencia significa que repetir una operación no duplica su efecto observable, no que haya una única invocación. Según el mecanismo de entrega puede haber duplicados y reordenamiento.">
   <div class="brandbar"><span class="brandmark">◉ CLOUD / SERVERLESS LAB</span><span class="brandright">ITBA · INGENIERÍA DE SOFTWARE II · 2026</span></div>
   <div class="content"><div class="eyebrow reveal">01 / FUNDAMENTOS · DISEÑO</div><h2 class="reveal">El estado persiste fuera de la función.</h2><div class="main reveal">
@@ -396,8 +425,8 @@ strong{font-weight:700;color:var(--ink)}
 <div class="panel"><span class="kicker">IDEMPOTENCIA</span><div class="v3-flow" style="margin-top:25px"><div class="v3-node" style="min-height:130px"><h3 style="font-size:28px">Evento X</h3><p>intento 1</p></div><span class="v3-chevron">›</span><div class="v3-node em" style="min-height:130px"><h3 style="font-size:28px">Un solo efecto</h3><p>sin duplicar la operación</p></div></div><div class="v3-flow" style="margin-top:16px"><div class="v3-node" style="min-height:130px"><h3 style="font-size:28px">Evento X</h3><p>reintento</p></div><span class="v3-chevron">›</span><div class="v3-node em" style="min-height:130px"><h3 style="font-size:28px">Un solo efecto</h3><p>sin duplicar la operación</p></div></div></div>
 </div><div class="v3-callout"><span>En flujos con entrega «al menos una vez», idempotencia y manejo de errores son decisiones de <strong>confiabilidad</strong>.</span></div>
 </div></div>
-  <div class="folio"><span>FUNDAMENTOS · ESTA 00:35 · ACUM. 05:05</span><span class="progress"><i style="width:33.9%"></i></span><span class="page">09 / 21</span></div>
-</section><section class="slide" data-time="50" data-notes="Esta diapositiva responde explícitamente a los atributos de calidad exigidos por la cátedra. Leer cada fila como una decisión, no como una mejora automática. Escalabilidad es ajustar capacidad; rendimiento es cuánto tarda y puede beneficiarse del paralelismo en tareas independientes, pero conserva latencia variable. La plataforma recupera entornos, pero el equipo sigue diseñando disponibilidad del proceso de negocio. En seguridad disminuye el parcheo de hosts y aumenta la importancia de permisos, eventos y secretos. La mantenibilidad cambia operación de infraestructura por integraciones y diagnóstico distribuido. La portabilidad sólo mejora si la lógica se separa de adaptadores; triggers, APIs y servicios administrados generan dependencia.">
+  <div class="folio"><span>FUNDAMENTOS · ESTA 00:35 · ACUM. 04:45</span><span class="progress"><i style="width:31.7%"></i></span><span class="page">09 / 22</span></div>
+</section><section class="slide" data-time="45" data-notes="Esta diapositiva responde explícitamente a los atributos de calidad exigidos por la cátedra. Leer cada fila como una decisión, no como una mejora automática. Escalabilidad es ajustar capacidad; rendimiento es cuánto tarda y puede beneficiarse del paralelismo en tareas independientes, pero conserva latencia variable. La plataforma recupera entornos, pero el equipo sigue diseñando disponibilidad del proceso de negocio. En seguridad disminuye el parcheo de hosts y aumenta la importancia de permisos, eventos y secretos. La mantenibilidad cambia operación de infraestructura por integraciones y diagnóstico distribuido. La portabilidad sólo mejora si la lógica se separa de adaptadores; triggers, APIs y servicios administrados generan dependencia.">
   <div class="brandbar"><span class="brandmark">◉ CLOUD / SERVERLESS LAB</span><span class="brandright">ITBA · INGENIERÍA DE SOFTWARE II · 2026</span></div>
   <div class="content"><div class="eyebrow reveal">01 / FUNDAMENTOS · ATRIBUTOS DE CALIDAD</div><h2 class="reveal">La arquitectura cambia los atributos de calidad.</h2><div class="main reveal">
 <div class="matrix" style="margin-top:12px">
@@ -410,8 +439,40 @@ strong{font-weight:700;color:var(--ink)}
  <div class="r"><div>Portabilidad</div><div>Lógica aislable mediante adaptadores</div><div>APIs, triggers y servicios del proveedor</div></div>
 </div><div class="v3-callout"><span><strong>Decisión:</strong> serverless reduce operación, pero desplaza riesgos hacia la configuración, las integraciones y la dependencia del proveedor.</span></div>
 </div></div>
-  <div class="folio"><span>FUNDAMENTOS · ESTA 00:50 · ACUM. 05:55</span><span class="progress"><i style="width:39.4%"></i></span><span class="page">10 / 21</span></div>
-</section><section class="slide" data-time="45" data-notes="Comparar patrones arquitectónicos con los mismos criterios, no marcas ni una recomendación predeterminada. Una VM conviene para cargas largas o requisitos especiales y conserva control del sistema operativo, a cambio de mayor operación y planificación de capacidad. Un contenedor administrado sirve para servicios completos o de ejecución continua y conserva control sobre el empaquetado y el runtime, con costos y límites según la plataforma. FaaS encaja con tareas independientes y demanda irregular; el equipo controla la lógica y la configuración, pero acepta límites de runtime, duración y latencia. Elegir según los objetivos de nivel de servicio —SLO, como disponibilidad o latencia—, el costo total de propiedad —TCO, incluyendo desarrollo y operación—, el riesgo, las capacidades del equipo y el volumen real.">
+  <div class="folio"><span>FUNDAMENTOS · ESTA 00:45 · ACUM. 05:30</span><span class="progress"><i style="width:36.7%"></i></span><span class="page">10 / 22</span></div>
+</section><section class="slide" data-time="35" data-notes="Vendor lock-in es un riesgo arquitectónico: cuanto más acopladas están la lógica de negocio, el esquema de eventos, la configuración de ejecución, el empaquetado y los servicios de datos, más costosa es la migración. En el artículo publicado en CNCF en diciembre de 2018, Yoav Landman distingue dependencias directas de la función y dependencias del runtime y destaca la falta de formato de empaquetado común entre proveedores FaaS de aquella época. Es un artículo de invitado y describe un problema histórico, no una afirmación de que hoy no exista ningún estándar. Separar núcleo de negocio y adaptadores reduce reescritura, pero migrar datos, IAM, observabilidad, triggers e infraestructura sigue costando; la abstracción introduce mantenimiento. CloudEvents estandariza el formato de datos de eventos, no las APIs y servicios completos. En la demo AWS SAM, API Gateway y DynamoDB son dependencias concretas que habría que adaptar al migrar.">
+  <div class="brandbar"><span class="brandmark">◉ CLOUD / SERVERLESS LAB</span><span class="brandright">ITBA · INGENIERÍA DE SOFTWARE II · 2026</span></div>
+  <div class="content"><div class="eyebrow reveal">01 / FUNDAMENTOS · PORTABILIDAD</div><h2 class="reveal">Vendor lock-in: el costo de abstraer.</h2>
+    <div class="main reveal" style="margin-top:31px">
+      <div class="v5-lockgrid">
+        <div class="panel v5-lockpanel orange">
+          <span class="v5-locklabel">ACOPLAMIENTO ALTO</span>
+          <div class="v5-lock-block">Lógica de negocio mezclada con SDK y runtime</div>
+          <div class="v5-lock-arrow">↓</div>
+          <div class="v5-lock-block">Triggers, empaquetado y configuración específicos</div>
+          <div class="v5-lock-arrow">↓</div>
+          <div class="v5-lock-block">Datos e integraciones dependientes del proveedor</div>
+          <div class="v5-lock-impact"><b>Migrar:</b> reescribir lógica e integraciones; mover datos y probar otra vez.</div>
+        </div>
+        <div class="panel v5-lockpanel feature">
+          <span class="v5-locklabel good">ACOPLAMIENTO CONTROLADO</span>
+          <div class="v5-lock-block good">Núcleo de negocio independiente</div>
+          <div class="v5-lock-arrow">↓</div>
+          <div class="v5-lock-interactions">
+            <div class="v5-lock-block">Adaptador de eventos</div>
+            <div class="v5-lock-block">Adaptador de persistencia</div>
+          </div>
+          <div class="v5-lock-arrow">↓</div>
+          <div class="v5-lock-block">Configuración y despliegue por plataforma</div>
+          <div class="v5-lock-impact"><b>Migrar:</b> reemplazar adaptadores y configuración; igual requiere pruebas.</div>
+        </div>
+      </div>
+      <div class="v5-lock-footer"><strong>Mitigar ≠ eliminar:</strong> separar dependencias directas y del runtime; usar interfaces y formatos abiertos como CloudEvents cuando correspondan.</div>
+      <div class="v5-lock-source">Base: artículo de invitado publicado por CNCF (2018) · Portabilidad de empaquetado y eventos · CloudEvents</div>
+    </div>
+  </div>
+  <div class="folio"><span>FUNDAMENTOS · ESTA 00:35 · ACUM. 06:05</span><span class="progress"><i style="width:40.6%"></i></span><span class="page">11 / 22</span></div>
+</section><section class="slide" data-time="40" data-notes="Comparar patrones arquitectónicos con los mismos criterios, no marcas ni una recomendación predeterminada. Una VM conviene para cargas largas o requisitos especiales y conserva control del sistema operativo, a cambio de mayor operación y planificación de capacidad. Un contenedor administrado sirve para servicios completos o de ejecución continua y conserva control sobre el empaquetado y el runtime, con costos y límites según la plataforma. FaaS encaja con tareas independientes y demanda irregular; el equipo controla la lógica y la configuración, pero acepta límites de runtime, duración y latencia. Elegir según los objetivos de nivel de servicio —SLO, como disponibilidad o latencia—, el costo total de propiedad —TCO, incluyendo desarrollo y operación—, el riesgo, las capacidades del equipo y el volumen real.">
   <div class="brandbar"><span class="brandmark">◉ CLOUD / SERVERLESS LAB</span><span class="brandright">ITBA · INGENIERÍA DE SOFTWARE II · 2026</span></div>
   <div class="content"><div class="eyebrow reveal">01 / FUNDAMENTOS · DECISIÓN</div><h2 class="reveal">Comparar alternativas antes de elegir.</h2><div class="main reveal">
 <div class="v3-compare-grid">
@@ -420,7 +481,7 @@ strong{font-weight:700;color:var(--ink)}
 <div class="panel v3-choice"><span class="num">C /</span><h3>Funciones bajo demanda</h3><p>La plataforma activa funciones y administra la capacidad.</p><ul><li><strong>Conviene:</strong> tareas independientes y demanda irregular</li><li><strong>Control:</strong> lógica y configuración</li><li><strong>Trade-off:</strong> límites de runtime, duración y latencia</li></ul></div>
 </div><div class="v3-callout"><span><strong>Decisión de negocio:</strong> elegir la alternativa que cumple los objetivos de servicio con un costo total y un riesgo aceptables.</span></div>
 </div></div>
-  <div class="folio"><span>FUNDAMENTOS · ESTA 00:45 · ACUM. 06:40</span><span class="progress"><i style="width:44.4%"></i></span><span class="page">11 / 21</span></div>
+  <div class="folio"><span>FUNDAMENTOS · ESTA 00:40 · ACUM. 06:45</span><span class="progress"><i style="width:45.0%"></i></span><span class="page">12 / 22</span></div>
 </section><section class="slide" data-time="30" data-notes="Esta es una guía de decisión independiente del proveedor: función para tareas cortas desencadenadas por eventos y demanda variable; contenedor serverless de tipo servicio para aplicaciones HTTP o microservicios con frameworks y ciclos de ejecución propios; job serverless para un procesamiento finito o batch. Los jobs pueden ejecutarse como contenedores y comparten esa tecnología con servicios; la diferencia es el ciclo de vida. No afirmar que contenedores son siempre más baratos ni que serverless escala sin límites. Comparar SLO de latencia y disponibilidad, duración, requerimientos de runtime, patrón de uso, costos de red y observabilidad. Después seguimos con las decisiones generales de costos y proveedores.">
   <div class="brandbar"><span class="brandmark">◉ CLOUD / SERVERLESS LAB</span><span class="brandright">ITBA · INGENIERÍA DE SOFTWARE II · 2026</span></div>
   <div class="content"><div class="eyebrow reveal">01 / FUNDAMENTOS · UNIDAD DE EJECUCIÓN</div><h2 class="reveal">¿Qué tipo de cómputo conviene?</h2>
@@ -433,7 +494,7 @@ strong{font-weight:700;color:var(--ink)}
       <div class="svl-mini"><strong>Decisión de negocio:</strong> elegir según duración, patrón de tráfico, latencia objetivo, control del runtime y costo total.</div>
     </div>
   </div>
-  <div class="folio"><span>FUNDAMENTOS · ESTA 00:30 · ACUM. 07:10</span><span class="progress"><i style="width:47.8%"></i></span><span class="page">12 / 21</span></div>
+  <div class="folio"><span>FUNDAMENTOS · ESTA 00:30 · ACUM. 07:15</span><span class="progress"><i style="width:48.3%"></i></span><span class="page">13 / 22</span></div>
 </section><section class="slide" data-time="35" data-notes="Presentar una fórmula conceptual deliberadamente sin tarifas ni nombres de proveedores. El precio del cómputo depende de ejecuciones, duración, recursos asignados y solicitudes o eventos facturables, pero eso no equivale al costo total de propiedad o TCO. Pagar por uso puede ahorrar cuando la demanda es irregular y habría capacidad ociosa pagada. Con uso constante y predecible conviene comparar contenedores o capacidad reservada. Sumar almacenamiento, transferencia, colas, observabilidad, soporte, desarrollo y operación. El costo variable también puede crecer por tráfico inesperado, reintentos, errores o exceso de logs. El punto no es demostrar cuál es universalmente más barato, sino identificar qué variables afectan la decisión.">
   <div class="brandbar"><span class="brandmark">◉ CLOUD / SERVERLESS LAB</span><span class="brandright">ITBA · INGENIERÍA DE SOFTWARE II · 2026</span></div>
   <div class="content"><div class="eyebrow reveal">01 / FUNDAMENTOS · ECONOMÍA</div><h2 class="reveal">Costo por uso no implica menor costo total.</h2><div class="main reveal">
@@ -443,8 +504,8 @@ strong{font-weight:700;color:var(--ink)}
 <div class="panel orange" style="min-height:300px"><h3>Carga sostenida</h3><div class="v3-cost-row"><span>Demanda predecible</span><span>↑</span></div><div class="v3-cost-row"><span>Uso constante</span><span>↑</span></div><p style="margin-top:18px">Conviene comparar contenedores o capacidad reservada.</p></div>
 </div><div class="v3-micro">Sumar almacenamiento, transferencia, colas, logs, soporte, desarrollo y operación. Tarifas y niveles gratuitos dependen del proveedor.</div>
 </div></div>
-  <div class="folio"><span>FUNDAMENTOS · ESTA 00:35 · ACUM. 07:45</span><span class="progress"><i style="width:51.7%"></i></span><span class="page">13 / 21</span></div>
-</section><section class="slide" data-time="55" data-notes="Recién acá aparecen los vendors. AWS Lambda, Azure Functions, Google Cloud Run functions y Cloudflare Workers son opciones comerciales del enfoque. No igualar runtimes de edge Workers a procesos tradicionales ni prometer equivalencia idéntica. Cómo elegir: integraciones existentes, región, costos, compliance, latencia, lock-in y experiencia del equipo. Fuentes oficiales actualizadas en Fuentes.">
+  <div class="folio"><span>FUNDAMENTOS · ESTA 00:35 · ACUM. 07:50</span><span class="progress"><i style="width:52.2%"></i></span><span class="page">14 / 22</span></div>
+</section><section class="slide" data-time="50" data-notes="Recién acá aparecen los vendors. AWS Lambda, Azure Functions, Google Cloud Run functions y Cloudflare Workers son opciones comerciales del enfoque. No igualar runtimes de edge Workers a procesos tradicionales ni prometer equivalencia idéntica. Cómo elegir: integraciones existentes, región, costos, compliance, latencia, lock-in y experiencia del equipo. Fuentes oficiales actualizadas en Fuentes.">
   <div class="brandbar"><span class="brandmark">◉ CLOUD / SERVERLESS LAB</span><span class="brandright">ITBA · INGENIERÍA DE SOFTWARE II · 2026</span></div>
   <div class="content"><div class="eyebrow reveal">02 / ECOSISTEMA · VENDORS</div><h2 class="reveal">Un modelo. Distintos proveedores.</h2><div class="main reveal">
 <div class="v3-vendorgrid">
@@ -454,7 +515,7 @@ strong{font-weight:700;color:var(--ink)}
 <div class="panel v3-vendor orange"><div class="vendor-tag">EDGE RUNTIME</div><h3>Cloudflare Workers</h3><p>JavaScript/TypeScript y Web APIs cerca del usuario, con modelo de ejecución diferente.</p></div>
 </div><div class="v3-micro">También hay cómputo serverless no-FaaS: contenedores, servicios y jobs. Elegir según integración, región, costos, límites y dependencia.</div>
 </div></div>
-  <div class="folio"><span>VENDORS · ESTA 00:55 · ACUM. 08:40</span><span class="progress"><i style="width:57.8%"></i></span><span class="page">14 / 21</span></div>
+  <div class="folio"><span>VENDORS · ESTA 00:50 · ACUM. 08:40</span><span class="progress"><i style="width:57.8%"></i></span><span class="page">15 / 22</span></div>
 </section><section class="slide" data-time="40" data-notes="Primera diapositiva de AWS. El ejemplo real traduce el patrón a HTTP API Gateway → Lambda → DynamoDB, con CloudWatch, IAM y AWS SAM como capacidades de soporte. API Gateway recibe el tráfico; Lambda ejecuta la lógica de negocio; DynamoDB conserva el estado y permite implementar idempotencia mediante escritura condicional; CloudWatch aporta logs y métricas; IAM limita los permisos entre servicios; SAM describe la infraestructura como código. La necesidad concreta es registrar inscripciones y evitar duplicados ante reintentos. No presentar esta arquitectura como definición general de serverless: es una implementación particular para la demo.">
   <div class="brandbar"><span class="brandmark">◉ CLOUD / SERVERLESS LAB</span><span class="brandright">ITBA · INGENIERÍA DE SOFTWARE II · 2026</span></div>
   <div class="content"><div class="eyebrow reveal">03 / IMPLEMENTACIÓN · AWS</div><h2 class="reveal">AWS: del patrón abstracto a servicios reales.</h2><div class="main reveal">
@@ -467,7 +528,7 @@ strong{font-weight:700;color:var(--ink)}
 <div class="v3-band"><div class="panel"><h3>CloudWatch</h3><p>Logs y métricas de ejecución</p></div><div class="panel feature"><h3>IAM</h3><p>Permisos mínimos entre servicios</p></div><div class="panel"><h3>AWS SAM</h3><p>Infraestructura como código</p></div></div>
 <div class="v3-micro">Caso concreto: registrar inscripciones y evitar duplicados cuando una solicitud se reintenta.</div>
 </div></div>
-  <div class="folio"><span>AWS · ESTA 00:40 · ACUM. 09:20</span><span class="progress"><i style="width:62.2%"></i></span><span class="page">15 / 21</span></div>
+  <div class="folio"><span>AWS · ESTA 00:40 · ACUM. 09:20</span><span class="progress"><i style="width:62.2%"></i></span><span class="page">16 / 22</span></div>
 </section><section class="slide" data-time="40" data-notes="Comparativa de decisión: elegir HTTP API + Lambda porque se puede llamar desde la presentación sin cambiar de ventana; DynamoDB desacopla estado y soporta put condicional atómico para idempotencia; CloudWatch permite enseñar observabilidad. Cuatro acciones didácticas: register, list, retry y burst. No inferir que una ráfaga de 12 requests demuestra escalabilidad o performance. El endpoint está abierto sólo para demo, sin datos sensibles y se debe destruir luego.">
   <div class="brandbar"><span class="brandmark">◉ CLOUD / SERVERLESS LAB</span><span class="brandright">ITBA · INGENIERÍA DE SOFTWARE II · 2026</span></div>
   <div class="content"><div class="eyebrow reveal">03 / IMPLEMENTACIÓN · CRITERIOS</div><h2 class="reveal">Por qué esta arquitectura para la demo.</h2><div class="main reveal">
@@ -476,7 +537,7 @@ strong{font-weight:700;color:var(--ink)}
 <div class="v3-stack"><div class="panel"><h3>Decisión técnica</h3><p>API Gateway → Lambda → DynamoDB, con logs en CloudWatch.</p></div><div class="panel orange"><h3>Compromiso aceptado</h3><p>API pública de corta duración, datos ficticios y límites de tráfico.</p></div><div class="panel"><h3>Alcance real</h3><p>Probamos el mecanismo; no prometemos elasticidad ilimitada ni ahorro sin medirlo.</p></div></div>
 </div>
 </div></div>
-  <div class="folio"><span>AWS · ESTA 00:40 · ACUM. 10:00</span><span class="progress"><i style="width:66.7%"></i></span><span class="page">16 / 21</span></div>
+  <div class="folio"><span>AWS · ESTA 00:40 · ACUM. 10:00</span><span class="progress"><i style="width:66.7%"></i></span><span class="page">17 / 22</span></div>
 </section><section class="slide" data-time="30" data-notes="Comenzamos los cinco minutos prácticos. Antes de exponer el stack debe estar desplegado en AWS. Elegir AWS REAL y pegar ApiUrl de los outputs de CloudFormation/SAM; pulsar Probar conexión. Si falla la red, SIMULACIÓN funciona completamente offline y está claramente etiquetada. No confundir ambos modos. Se explica que CORS está permitido para la PoC, pero NO es autenticación.">
   <div class="brandbar"><span class="brandmark">◉ CLOUD / SERVERLESS LAB</span><span class="brandright">ITBA · INGENIERÍA DE SOFTWARE II · 2026</span></div>
   <div class="content"><div class="eyebrow reveal">04 / DEMO INTERACTIVA · CONFIGURACIÓN</div><h2 class="reveal">00 / Elegir modo y conectar el backend.</h2><div class="main reveal">
@@ -488,7 +549,7 @@ strong{font-weight:700;color:var(--ink)}
 <p class="v4-callout"><strong>Tip:</strong> las pruebas reales se hacen desde los botones; no se abre AWS Console en esta etapa.</p></div>
 <div class="panel v4-panel"><span class="kicker">RESPUESTA / RED</span><h3>¿Quién está respondiendo?</h3><pre id="setupOutput" class="v4-output">Elegí SIMULACIÓN o AWS REAL y presioná GET /health.</pre><div class="v4-tile">SIMULACIÓN = memoria del navegador. <b>AWS REAL</b> = requests HTTP a la API desplegada.</div></div></div>
 </div></div>
-  <div class="folio"><span>DEMO · ESTA 00:30 · ACUM. 10:30</span><span class="progress"><i style="width:70.0%"></i></span><span class="page">17 / 21</span></div>
+  <div class="folio"><span>DEMO · ESTA 00:30 · ACUM. 10:30</span><span class="progress"><i style="width:70.0%"></i></span><span class="page">18 / 22</span></div>
 </section><section class="slide" data-time="75" data-notes="Paso 1: escribir un nombre ficticio, pulsar POST /registrations y observar status 201 si es nuevo; luego GET /registrations para ver el registro persistido. El request_id es generado en el frontend y se guarda entre slides para mostrar la operación idempotente. En AWS REAL, DynamoDB almacena los datos, no la RAM de Lambda. Indicar tiempo de ida y vuelta desde navegador, no duración de Lambda.">
   <div class="brandbar"><span class="brandmark">◉ CLOUD / SERVERLESS LAB</span><span class="brandright">ITBA · INGENIERÍA DE SOFTWARE II · 2026</span></div>
   <div class="content"><div class="eyebrow reveal">04 / DEMO · PASO 1</div><h2 class="reveal">01 / Invocar una función y persistir datos.</h2><div class="main reveal">
@@ -499,7 +560,7 @@ strong{font-weight:700;color:var(--ink)}
 <div class="v4-strip"><span class="v4-status demo-mode-badge">● SIMULACIÓN · NO AWS</span></div></div>
 <div class="panel v4-panel"><span class="kicker">RESULTADO</span><h3>Status HTTP y JSON</h3><pre id="registrationOutput" class="v4-output">Presioná POST registrar para crear un nuevo registro.</pre><div class="v4-tile">201 Created → estado en DynamoDB. GET devuelve hasta 50 registros (PoC).</div></div></div>
 </div></div>
-  <div class="folio"><span>DEMO · ESTA 01:15 · ACUM. 11:45</span><span class="progress"><i style="width:78.3%"></i></span><span class="page">18 / 21</span></div>
+  <div class="folio"><span>DEMO · ESTA 01:15 · ACUM. 11:45</span><span class="progress"><i style="width:78.3%"></i></span><span class="page">19 / 22</span></div>
 </section><section class="slide" data-time="75" data-notes="Paso 2: con el MISMO request_id y el MISMO nombre, repetir POST. Debe devolver 200 duplicate true sin escribir otro registro. Se usa DynamoDB PutItem con ConditionExpression attribute_not_exists(registration_id), que es atómica. Mostrar el conflicto intencional con otro nombre pero igual request_id: HTTP 409. Esto no significa exactly-once, sino efecto idempotente. Si empezaron aquí sin crear el primer registro, mostrar que se requiere crear uno antes.">
   <div class="brandbar"><span class="brandmark">◉ CLOUD / SERVERLESS LAB</span><span class="brandright">ITBA · INGENIERÍA DE SOFTWARE II · 2026</span></div>
   <div class="content"><div class="eyebrow reveal">04 / DEMO · PASO 2</div><h2 class="reveal">02 / Reintentar sin duplicar el efecto.</h2><div class="main reveal">
@@ -510,7 +571,7 @@ strong{font-weight:700;color:var(--ink)}
 <div class="v4-steps"><div><strong>201 · PRIMER ENVÍO</strong>Creación válida en la tabla.</div><div><strong>200 · RETRY CON MISMO ID</strong>duplicate: true, sin crear otro objeto.</div></div></div>
 <div class="panel v4-panel"><span class="kicker">EVIDENCIA</span><h3>Response 200 o 409</h3><pre id="idempotencyOutput" class="v4-output">Primero registrá un asistente en la diapositiva anterior; después repetí el mismo request_id.</pre><div class="v4-tile">Reintento idempotente <b>≠</b> invocación exactamente una vez.</div></div></div>
 </div></div>
-  <div class="folio"><span>DEMO · ESTA 01:15 · ACUM. 13:00</span><span class="progress"><i style="width:86.7%"></i></span><span class="page">19 / 21</span></div>
+  <div class="folio"><span>DEMO · ESTA 01:15 · ACUM. 13:00</span><span class="progress"><i style="width:86.7%"></i></span><span class="page">20 / 22</span></div>
 </section><section class="slide" data-time="75" data-notes="Paso 3: presionar RÁFAGA CONTROLADA 12 requests distribuidos en 3 grupos de 4; observar éxitos, errores, respuestas y tiempos RTT de navegador. Aclarar que una ráfaga de este tamaño no mide escalabilidad ni garantiza latencia. En AWS REAL, Lambda puede escalar concurrentemente, sujeto a reserved concurrency y throttling; DynamoDB responde a persistencia. Opcionalmente abrir CloudWatch luego para ver invocaciones agregadas.">
   <div class="brandbar"><span class="brandmark">◉ CLOUD / SERVERLESS LAB</span><span class="brandright">ITBA · INGENIERÍA DE SOFTWARE II · 2026</span></div>
   <div class="content"><div class="eyebrow reveal">04 / DEMO · PASO 3</div><h2 class="reveal">03 / Cambiar la carga y observar las respuestas.</h2><div class="main reveal">
@@ -521,7 +582,7 @@ strong{font-weight:700;color:var(--ink)}
 <p class="v4-callout"><strong>Lectura arquitectónica:</strong> son requests independientes; el estado compartido vive fuera de las funciones.</p></div>
 <div class="panel v4-panel"><span class="kicker">RESULTADOS OBSERVADOS</span><h3>HTTP + RTT del navegador</h3><pre id="burstOutput" class="v4-output">La ráfaga está limitada a 12 requests para evitar costos y errores en la demo.</pre><div class="v4-tile">El tiempo mostrado es <b>round-trip del navegador</b>, NO duración interna de Lambda.</div></div></div>
 </div></div>
-  <div class="folio"><span>DEMO · ESTA 01:15 · ACUM. 14:15</span><span class="progress"><i style="width:95.0%"></i></span><span class="page">20 / 21</span></div>
+  <div class="folio"><span>DEMO · ESTA 01:15 · ACUM. 14:15</span><span class="progress"><i style="width:95.0%"></i></span><span class="page">21 / 22</span></div>
 </section><section class="slide" data-time="45" data-notes="Último paso: mostrar que CloudWatch registra invocaciones/errores/duración del backend AWS, pero no garantizar que las métricas estén visibles inmediatamente. Clic Abrir CloudWatch abre la consola y luego se busca /aws/lambda/&lt;nombre&gt;. También se puede hacer GET desde la presentación para confirmar persistencia. La simulación puede limpiarse con botón. Cierre: elección de Serverless según atributos y TCO, no por moda. No confundir resultados simulados con datos reales.">
   <div class="brandbar"><span class="brandmark">◉ CLOUD / SERVERLESS LAB</span><span class="brandright">ITBA · INGENIERÍA DE SOFTWARE II · 2026</span></div>
   <div class="content"><div class="eyebrow reveal">04 / DEMO · CIERRE</div><h2 class="reveal">04 / Verificar, observar y concluir.</h2><div class="main reveal">
@@ -532,15 +593,17 @@ strong{font-weight:700;color:var(--ink)}
 <div class="v4-tile">En producción agregaríamos autenticación, observabilidad, protección antiabuso y controles de presupuesto.</div>
 <div class="v4-callout"><strong>Conclusión:</strong> Serverless es una opción arquitectónica condicionada por SLO, costo total y capacidades del equipo.</div></div></div>
 </div></div>
-  <div class="folio"><span>DEMO · ESTA 00:45 · ACUM. 15:00</span><span class="progress"><i style="width:100.0%"></i></span><span class="page">21 / 21</span></div>
+  <div class="folio"><span>DEMO · ESTA 00:45 · ACUM. 15:00</span><span class="progress"><i style="width:100.0%"></i></span><span class="page">22 / 22</span></div>
 </section></main></div>
-<div class="deck-controls"><button id="prevBtn" title="Anterior">◀</button><span id="controlCounter">1 / 21</span><button id="nextBtn" title="Siguiente">▶</button><button id="notesBtn" title="Notas del expositor (N)">N / Notas</button><button id="refsBtn" title="Fuentes (R)">R / Fuentes</button></div>
+<div class="deck-controls"><button id="prevBtn" title="Anterior">◀</button><span id="controlCounter">1 / 22</span><button id="nextBtn" title="Siguiente">▶</button><button id="notesBtn" title="Notas del expositor (N)">N / Notas</button><button id="refsBtn" title="Fuentes (R)">R / Fuentes</button></div>
 <div id="notesDrawer" class="drawer"><button aria-label="Cerrar">Cerrar ×</button><h3 id="notesTitle">Notas</h3><div class="note-content" id="notesBody"></div></div>
 <div id="refDrawer" class="drawer">
   <button aria-label="Cerrar">Cerrar ×</button>
   <h3>Fuentes y documentación</h3>
-  <div class="note-content">Fundamentos independientes de proveedores hasta la diapositiva 13. Vendors en la 14; ejemplo AWS desde la 15; demo entre las diapositivas 17 y 21. Fuentes oficiales consultadas en noviembre de 2026.</div>
+  <div class="note-content">Fundamentos independientes de proveedores hasta la diapositiva 14. Vendors en la 15; AWS desde la 16; demo entre las diapositivas 18 y 22. Fuentes oficiales consultadas en noviembre de 2026.</div>
   <div class="sources-list">
+    <div><a href="https://cloudevents.io/" target="_blank" rel="noopener noreferrer">CloudEvents (CNCF) — especificación abierta de datos de eventos</a></div>
+    <div><a href="https://www.cncf.io/blog/2022/01/28/serverless-architecture-pros-and-cons/" target="_blank" rel="noopener noreferrer">CNCF Member Post — pros, cons y vendor lock-in</a></div>
     <div><a href="https://glossary.cncf.io/serverless/" target="_blank" rel="noopener noreferrer">CNCF Cloud Native Glossary — Serverless (no equivale a FaaS)</a></div>
     <div><a href="https://docs.cloud.google.com/run/docs/overview/what-is-cloud-run" target="_blank" rel="noopener noreferrer">Google Cloud Run — servicios, jobs y otras formas de ejecutar contenedores</a></div>
     <div><a href="https://learn.microsoft.com/en-us/azure/container-apps/jobs" target="_blank" rel="noopener noreferrer">Azure Container Apps — servicios y jobs</a></div>

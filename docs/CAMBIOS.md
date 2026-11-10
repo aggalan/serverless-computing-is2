@@ -520,3 +520,12 @@ Se parte de `main` después del merge `febea560`. No se eliminó contenido del e
 - **Criterio académico:** la CNCF se usa para definir el modelo general; los productos concretos sólo aparecen después del bloque de fundamentos.
 
 **Tiempos:** 10:00 explicación + 5:00 demo = 15:00 estrictos.
+
+
+## Revisión del 10/11/2026 — Ciclo de ejecución y vendor lock-in (CNCF)
+
+- **Diapositiva 5:** se reemplazó el mapa de categorías —demasiado similar a la diapositiva 4— por un diagrama visual de cuatro etapas: despliegue, demanda, asignación de capacidad, ejecución. Se diferencian responsabilidades del equipo y del proveedor. No se eliminaron categorías: FaaS, BaaS y contenedores siguen en la 4 y los criterios de funciones / servicios / jobs siguen en la 13.
+- **Nueva diapositiva 11:** diagrama comparativo de acoplamiento alto y acoplamiento controlado, basado en el artículo de invitado de CNCF de 2018 sobre *Function Package*. Dependencias directas versus runtime, empaquetado, triggers, servicios de datos y mitigaciones con adaptadores/CloudEvents. No se promete portabilidad total.
+- **Guion y bibliografía:** se agregaron notas orales precisas y fuentes primarias. En el HTML se actualizaron el panel de fuentes y los números de diapositiva.
+- **Tiempo:** 22 diapositivas, con 10:00 de teoría (17 diapositivas) y 5:00 de demo (5 diapositivas). Se redistribuyeron 35 segundos de las secciones previas; los botones de la demo se conservaron intactos.
+- **Vendor-neutral:** ningún producto particular se presenta como la definición general del modelo.
