@@ -544,7 +544,7 @@ strong{font-weight:700;color:var(--ink)}
 <div class="v4-cols"><div class="panel feature v4-panel"><span class="kicker">PANEL DE CONTROL</span>
 <div class="v4-strip"><span class="v4-status demo-mode-badge">● SIMULACIÓN · NO AWS</span><span class="v4-mini">Conmutador visible durante toda la demo</span></div>
 <label class="v4-form-label" for="demoMode">MODO DE EJECUCIÓN</label><select id="demoMode" class="v4-input"><option value="sim">SIMULACIÓN — sin AWS</option><option value="aws">AWS REAL — API Gateway + Lambda</option></select>
-<label class="v4-form-label" for="apiEndpoint">URL DE API GATEWAY (OUTPUT ApiUrl DE SAM)</label><input class="v4-input" id="apiEndpoint" spellcheck="false" placeholder="https://xxxx.execute-api.us-east-1.amazonaws.com">
+<label class="v4-form-label" for="apiEndpoint">URL BASE DE API GATEWAY (TERRAFORM / SAM, SIN /HEALTH NI ?QUERY)</label><input class="v4-input" id="apiEndpoint" spellcheck="false" placeholder="https://xxxx.execute-api.us-east-1.amazonaws.com">
 <div class="v4-actions"><button id="testConnectionBtn" class="v4-btn">GET /health</button><button id="clearEndpointBtn" class="v4-btn alt">Borrar URL</button></div>
 <p class="v4-callout"><strong>Tip:</strong> las pruebas reales se hacen desde los botones; no se abre AWS Console en esta etapa.</p></div>
 <div class="panel v4-panel"><span class="kicker">RESPUESTA / RED</span><h3>¿Quién está respondiendo?</h3><pre id="setupOutput" class="v4-output">Elegí SIMULACIÓN o AWS REAL y presioná GET /health.</pre><div class="v4-tile">SIMULACIÓN = memoria del navegador. <b>AWS REAL</b> = requests HTTP a la API desplegada.</div></div></div>
@@ -657,8 +657,23 @@ const $=id=>document.getElementById(id);
 const print=(id, content)=>{const el=$(id); if(el)el.textContent=typeof content==='string'?content:JSON.stringify(content,null,2);};
 const randKey=()=> 'demo-'+(window.crypto?.randomUUID?.()||Math.random().toString(36).slice(2)+Date.now()).replace(/[^a-zA-Z0-9_-]/g,'').slice(0,30);
 function ensureKey(){if(!d.key)d.key=randKey();$('activeId').textContent=d.key;}
+function normalizeApiEndpoint(value){
+  const input=(value||'').trim();
+  if(!input)return '';
+  try{
+    const url=new URL(input);
+    // Links copiados del navegador pueden contener ?utm_source, #fragment o /health.
+    // Se conserva el path de stage, por ejemplo /prod en una API REST.
+    const path=url.pathname.replace(/\/+$/,'').replace(/\/(health|registrations)$/i,'');
+    return url.origin+path;
+  }catch(e){
+    return input.split(/[?#]/,1)[0].replace(/\/+$/,'');
+  }
+}
 function updateMode(){
-  d.mode=$('demoMode').value; d.endpoint=$('apiEndpoint').value.trim().replace(/\/+$/,'');
+  d.mode=$('demoMode').value;
+  d.endpoint=normalizeApiEndpoint($('apiEndpoint').value);
+  if(document.activeElement!==$('apiEndpoint')&&$('apiEndpoint').value.trim()!==d.endpoint)$('apiEndpoint').value=d.endpoint;
   const isReal=d.mode==='aws'; document.querySelectorAll('.demo-mode-badge').forEach(el=>{el.textContent=isReal?'● AWS REAL · HTTP':'● SIMULACIÓN · NO AWS';el.style.color=isReal?'#43dec4':'#c7ff56';});
   try{localStorage.setItem('serverlessDemoMode',d.mode);localStorage.setItem('serverlessDemoEndpoint',d.endpoint);}catch(e){}
 }
@@ -687,7 +702,12 @@ async function callAPI(method,path,body){
     const res=await fetch(d.endpoint+path,{method,mode:'cors',headers:body?{'content-type':'application/json'}:{},body:body?JSON.stringify(body):undefined,signal:ctl.signal});
     const txt=await res.text();let data;try{data=JSON.parse(txt)}catch(e){data={raw:txt.slice(0,600)}}
     return{status:res.status,data,ms:performance.now()-start};
-  }catch(err){throw Error(err.name==='AbortError'?'Timeout de 9s. Revisá URL, API y conexión.':'No fue posible contactar la API (revisá despliegue, CORS y URL). '+err.message);}
+  }catch(err){
+    const target=d.endpoint+path;
+    const origin=location.origin==='null'?'archivo local / navegador integrado':location.origin;
+    const hint='Probá abrir '+target+' directamente en Chrome o Safari. Si carga JSON, abrí la presentación desde http://localhost:8000 y revisá la pestaña Network/Console.';
+    throw Error(err.name==='AbortError'?'Timeout de 9s al contactar '+target+'. '+hint:'No fue posible contactar '+target+' desde '+origin+'. '+err.message+'. '+hint);
+  }
   finally{clearTimeout(timer)}
 }
 async function run(btn,output,fn){const b=$(btn);if(b.disabled)return;b.disabled=true;try{await fn()}catch(e){print(output,'ERROR: '+e.message)}finally{b.disabled=false}}

@@ -144,7 +144,18 @@ jobs:
         if: ${{ github.event_name == 'push' || github.event.inputs.operation == 'apply' }}
         run: |
           URL=$(terraform output -raw api_url)
+          URL="${URL%/}"
           curl --fail --show-error --silent --max-time 15 "$URL/health"
           echo
+          echo "Comprobando CORS con origen http://localhost:8000..."
+          CORS_HEADERS=$(curl --fail --show-error --silent --max-time 15 -D - -o /dev/null \
+            -H "Origin: http://localhost:8000" "$URL/health")
+          if ! echo "$CORS_HEADERS" | grep -Eqi '^access-control-allow-origin: ([*]|http://localhost:8000)'; then
+            echo "::error::La respuesta de /health no incluye Access-Control-Allow-Origin correcto"
+            echo "$CORS_HEADERS"
+            exit 1
+          fi
+          echo "CORS /health OK"
           echo "### API desplegada" >> "$GITHUB_STEP_SUMMARY"
-          echo "URL: `$URL`" >> "$GITHUB_STEP_SUMMARY"
+          echo "URL: $URL" >> "$GITHUB_STEP_SUMMARY"
+          echo "CORS: GET /health permitido desde http://localhost:8000" >> "$GITHUB_STEP_SUMMARY"

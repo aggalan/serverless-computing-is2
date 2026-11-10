@@ -107,3 +107,7 @@ La presentación separa **cómputo** (FaaS, contenedores que sirven requests, jo
 
 ## Portabilidad y vendor lock-in
 La diapositiva 11 contrasta una arquitectura muy acoplada con otra cuyo núcleo de negocio está separado de los adaptadores de eventos y datos. El artículo de 2018 publicado por CNCF sobre empaquetado de funciones identifica dependencias del código y del runtime como causas importantes del costo de migración. CloudEvents estandariza datos de eventos, pero no todo el stack. El objetivo es explicar el trade-off sin prometer portabilidad perfecta. La nueva diapositiva 5 describe el ciclo de ejecución serverless, sin duplicar el catálogo de modalidades de la diapositiva 4.
+
+### Problemas para conectar la demo
+
+Si en la diapositiva 18 aparece `Failed to fetch`, consultá [Diagnóstico de API Gateway, URL y CORS](docs/DIAGNOSTICO_API_CORS.md). La presentación acepta la URL base y ahora descarta `?utm_source=...`, `#fragment` y `/health` al copiarla desde el navegador. Usá Chrome/Safari y serví `index.html` desde `http://localhost:8000`.
