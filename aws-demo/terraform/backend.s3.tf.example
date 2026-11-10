@@ -1,0 +1,6 @@
+# Opcional: solo si usarán el deployment workflow de GitHub Actions.
+# Requiere CREAR PRIMERO un bucket privado en S3.
+# No usar simultáneamente un estado local y uno remoto para el mismo stack.
+terraform {
+  backend "s3" {}
+}

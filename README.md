@@ -34,7 +34,33 @@ Abrir **http://localhost:8000**. Navegar con flechas o espacio. Las diapositivas
 
 Los resultados de la simulación **no son métricas de AWS**, y una prueba breve de 12 solicitudes no prueba escalabilidad ilimitada.
 
-## Desplegar en AWS
+
+## Infraestructura AWS: Terraform y diagrama editable
+
+![Arquitectura de la demo AWS](docs/arquitectura-aws.svg)
+
+- [Editar diagrama en draw.io](docs/arquitectura-aws.drawio) — abrilo con [app.diagrams.net](https://app.diagrams.net/).
+- [Guía completa: Terraform para AWS Academy + pipeline de GitHub Actions](docs/DESPLIEGUE_TERRAFORM_ACADEMY.md).
+- [Terraform (IaC)](aws-demo/terraform/main.tf): API Gateway HTTP API → Lambda (Python) → DynamoDB, con CloudWatch y `LabRole` existente.
+- [CI de tests y validación](.github/workflows/ci.yml): corre en cada push/PR sin utilizar credenciales AWS.
+- [Deploy opcional con Terraform](.github/workflows/deploy-aws.yml): `plan/apply/destroy` manuales, estado remoto S3 y autenticación OIDC (cuenta estándar) o credenciales temporales (Learner Lab).
+
+### Inicio rápido con AWS Academy (recomendado)
+
+En `AWS Details → AWS CLI → Show` copiá las credenciales temporales (incluido `aws_session_token`) a `~/.aws/credentials`, perfil `itba-academy`. No las subas al repositorio ni las pegues en una conversación.
+
+```bash
+export AWS_PROFILE=itba-academy
+export AWS_REGION=us-east-1
+aws sts get-caller-identity
+bash aws-demo/scripts/deploy-academy.sh
+```
+
+Copiá el `api_url` resultante en la diapositiva **18**, modo **AWS REAL**. Al terminar, en `aws-demo/terraform`, ejecutar `terraform destroy` para eliminar los recursos.
+
+**Importante:** el despliegue Terraform es una **alternativa al SAM existente** (no se reemplazó `template.yaml`). No se ha aplicado en una cuenta AWS desde este repositorio. Por defecto el workflow de GitHub NO despliega en cada push: el modo Academy usa sesiones efímeras e IAM restringido. Para habilitar despliegues persistentes se necesita un bucket S3 privado para state y una autenticación configurada; ver la guía.
+
+## Alternativa original: AWS SAM
 
 Requisitos: cuenta con permisos apropiados, AWS CLI configurada y AWS SAM CLI.
 

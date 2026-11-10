@@ -1,0 +1,116 @@
+name: Terraform deploy (explicit opt-in)
+on:
+  workflow_dispatch:
+    inputs:
+      operation:
+        description: 'Acción sobre la infraestructura (AWS Academy necesita credenciales temporales vigentes)'
+        required: true
+        type: choice
+        options: [plan, apply, destroy]
+        default: plan
+  push:
+    branches: [main]
+    paths:
+      - 'aws-demo/src/**'
+      - 'aws-demo/terraform/**'
+      - '.github/workflows/deploy-aws.yml'
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: terraform-serverless-demo
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    # Por defecto, cada push corre solo CI; habilitar AUTO_DEPLOY=true explícitamente.
+    if: ${{ github.event_name == 'workflow_dispatch' || vars.AUTO_DEPLOY == 'true' }}
+    environment: aws-demo
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: aws-demo/terraform
+        shell: bash
+    env:
+      AWS_REGION: ${{ vars.AWS_REGION || 'us-east-1' }}
+      TF_STATE_BUCKET: ${{ vars.TF_STATE_BUCKET }}
+      TF_VAR_aws_region: ${{ vars.AWS_REGION || 'us-east-1' }}
+      TF_VAR_lambda_role_name: ${{ vars.LAMBDA_ROLE_NAME || 'LabRole' }}
+      TF_VAR_lambda_execution_role_arn: ${{ vars.LAMBDA_EXECUTION_ROLE_ARN }}
+      TF_IN_AUTOMATION: 'true'
+      TF_INPUT: 'false'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Terraform CLI
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: '1.11.4'
+          terraform_wrapper: false
+
+      # Cuentas AWS normales: IAM OIDC con sub limitado al repo/branch.
+      - name: AWS credentials (OIDC)
+        if: ${{ vars.AWS_DEPLOY_ROLE_ARN != '' }}
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ env.AWS_REGION }}
+          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+
+      # Learner Lab: credenciales de sesión; deben renovarse al vencer.
+      - name: AWS credentials (Academy session)
+        if: ${{ vars.AWS_DEPLOY_ROLE_ARN == '' }}
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ env.AWS_REGION }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+
+      - name: Verify AWS identity and private state bucket
+        run: |
+          if [[ -z "$TF_STATE_BUCKET" ]]; then
+            echo "::error::Configurar vars.TF_STATE_BUCKET con un bucket S3 privado y preexistente"
+            exit 1
+          fi
+          aws sts get-caller-identity
+          aws s3api head-bucket --bucket "$TF_STATE_BUCKET"
+
+      - name: Enable persistent remote Terraform state
+        run: |
+          cat > backend.tf <<'EOF'
+          terraform {
+            backend "s3" {}
+          }
+          EOF
+          terraform init -input=false \
+            -backend-config="bucket=$TF_STATE_BUCKET" \
+            -backend-config="key=serverless-computing-is2/demo/terraform.tfstate" \
+            -backend-config="region=$AWS_REGION" \
+            -backend-config="encrypt=true" \
+            -backend-config="use_lockfile=true"
+
+      - name: Terraform plan
+        env:
+          OPERATION: ${{ github.event.inputs.operation }}
+        run: |
+          if [[ "$OPERATION" == "destroy" ]]; then
+            terraform plan -destroy -input=false -out=tfplan -no-color
+          else
+            terraform plan -input=false -out=tfplan -no-color
+          fi
+
+      - name: Apply plan (only when requested)
+        if: ${{ github.event_name == 'push' || github.event.inputs.operation == 'apply' || github.event.inputs.operation == 'destroy' }}
+        run: terraform apply -auto-approve -input=false tfplan
+
+      - name: Verify health after apply
+        if: ${{ github.event_name == 'push' || github.event.inputs.operation == 'apply' }}
+        run: |
+          URL=$(terraform output -raw api_url)
+          curl --fail --show-error --silent --max-time 15 "$URL/health"
+          echo
+          echo "### API desplegada" >> "$GITHUB_STEP_SUMMARY"
+          echo "URL: `$URL`" >> "$GITHUB_STEP_SUMMARY"

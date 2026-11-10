@@ -152,3 +152,9 @@ Confirmá la eliminación en **CloudFormation**. El borrado destruye la tabla y 
 - **Para volver a deployar**: `sam build && sam deploy` desde `aws-demo/` (si guardaste la configuración).
 
 Fuentes oficiales: [API Gateway CORS](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-cors.html), [SAM HTTP API](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-httpapi.html), [DynamoDB conditional expressions](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.ConditionExpressions.html).
+
+## Opción adicional para AWS Academy: Terraform (sin crear roles IAM)
+
+La alternativa SAM descrita arriba puede fallar en AWS Academy Learner Lab porque intenta crear un rol IAM. Para ese entorno se agregó un módulo Terraform que **reutiliza el rol existente `LabRole`**, además de un pipeline GitHub Actions opcional y un diagrama editable.
+
+Ver [guía de despliegue con Terraform en AWS Academy](DESPLIEGUE_TERRAFORM_ACADEMY.md) y [diagrama draw.io](arquitectura-aws.drawio). No aplicar SAM y Terraform sobre los mismos recursos, y eliminar lo desplegado al terminar.

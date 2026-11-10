@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1860 1080" width="1860" height="1080" role="img" aria-label="Arquitectura AWS Serverless ITBA">
+<defs><marker id="a" markerWidth="11" markerHeight="11" refX="10" refY="5" orient="auto"><path d="M 0 0 L 11 5 L 0 11 z" fill="#D2F77E"/></marker><marker id="b" markerWidth="10" markerHeight="10" refX="10" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#A88BDE"/></marker></defs>
+<rect width="1860" height="1080" fill="#07131B"/>
+<text x="55" y="85" fill="#D2F77E" font-size="42" font-family="Arial,sans-serif" font-weight="bold">SERVERLESS COMPUTING / DEMO AWS</text>
+<text x="55" y="136" fill="#B7CFCB" font-size="24" font-family="Arial,sans-serif">Una inscripción HTTP dispara cómputo, persiste estado y produce telemetría</text>
+<rect x="355" y="205" width="1430" height="575" rx="20" fill="#12222B" stroke="#55727A" stroke-width="3" stroke-dasharray="12 8"/>
+<text x="385" y="265" fill="#F8B65D" font-size="30" font-family="Arial" font-weight="bold">AWS CLOUD · LEARNER LAB</text>
+<text x="58" y="320" fill="#D2F77E" font-size="23" font-family="Arial" font-weight="bold">EJECUCIÓN / invocación bajo demanda</text>
+<rect x="58" y="370" width="245" height="150" rx="13" fill="#20343D" stroke="#5D929A" stroke-width="3"/>
+<text x="180.5" y="436" text-anchor="middle" fill="#F1F4EB" font-family="Arial" font-size="28" font-weight="bold">PRESENTACIÓN HTML</text>
+<text x="180.5" y="472" text-anchor="middle" fill="#DCE7E5" font-family="Arial" font-size="23">Botones GET / POST</text>
+<rect x="450" y="355" width="275" height="160" rx="13" fill="#332840" stroke="#AB82C3" stroke-width="3"/>
+<text x="587.5" y="426" text-anchor="middle" fill="#F1F4EB" font-family="Arial" font-size="28" font-weight="bold">API GATEWAY</text>
+<text x="587.5" y="462" text-anchor="middle" fill="#DCE7E5" font-family="Arial" font-size="23">HTTP API + CORS</text>
+<rect x="826" y="355" width="255" height="160" rx="13" fill="#55371B" stroke="#F8B65D" stroke-width="3"/>
+<text x="953.5" y="426" text-anchor="middle" fill="#F1F4EB" font-family="Arial" font-size="28" font-weight="bold">AWS LAMBDA</text>
+<text x="953.5" y="462" text-anchor="middle" fill="#DCE7E5" font-family="Arial" font-size="23">Python 3.12</text>
+<rect x="1192" y="355" width="290" height="160" rx="13" fill="#163F52" stroke="#4FC5E2" stroke-width="3"/>
+<text x="1337" y="426" text-anchor="middle" fill="#F1F4EB" font-family="Arial" font-size="28" font-weight="bold">DYNAMODB</text>
+<text x="1337" y="462" text-anchor="middle" fill="#DCE7E5" font-family="Arial" font-size="23">Registrations</text>
+<rect x="824" y="598" width="255" height="125" rx="13" fill="#332840" stroke="#AB82C3" stroke-width="3"/>
+<text x="951.5" y="651.5" text-anchor="middle" fill="#F1F4EB" font-family="Arial" font-size="28" font-weight="bold">CLOUDWATCH</text>
+<text x="951.5" y="687.5" text-anchor="middle" fill="#DCE7E5" font-family="Arial" font-size="23">Logs + métricas</text>
+<rect x="1194" y="598" width="290" height="125" rx="13" fill="#20343D" stroke="#72B89D" stroke-width="3"/>
+<text x="1339" y="651.5" text-anchor="middle" fill="#F1F4EB" font-family="Arial" font-size="28" font-weight="bold">IAM: LabRole</text>
+<text x="1339" y="687.5" text-anchor="middle" fill="#DCE7E5" font-family="Arial" font-size="23">Rol preexistente</text>
+<rect x="65" y="873" width="295" height="125" rx="13" fill="#20343D" stroke="#80A6A6" stroke-width="3"/>
+<text x="212.5" y="926.5" text-anchor="middle" fill="#F1F4EB" font-family="Arial" font-size="28" font-weight="bold">GITHUB</text>
+<text x="212.5" y="962.5" text-anchor="middle" fill="#DCE7E5" font-family="Arial" font-size="23">Repo + Actions CI</text>
+<rect x="500" y="873" width="295" height="125" rx="13" fill="#34264B" stroke="#A88BDE" stroke-width="3"/>
+<text x="647.5" y="926.5" text-anchor="middle" fill="#F1F4EB" font-family="Arial" font-size="28" font-weight="bold">TERRAFORM</text>
+<text x="647.5" y="962.5" text-anchor="middle" fill="#DCE7E5" font-family="Arial" font-size="23">plan → apply</text>
+<g fill="none" stroke="#D2F77E" stroke-width="4" marker-end="url(#a)">
+<path d="M303 444 H450"/><path d="M725 438 H826"/><path d="M1081 438 H1192"/>
+</g>
+<text x="325" y="418" fill="#DCE7E5" font-size="21" font-family="Arial">HTTPS</text>
+<text x="735" y="413" fill="#DCE7E5" font-size="21" font-family="Arial">Invoke</text>
+<text x="1086" y="405" fill="#DCE7E5" font-size="20" font-family="Arial">Put/Get</text>
+<g fill="none" stroke="#B29BCE" stroke-width="3" stroke-dasharray="9 7" marker-end="url(#b)">
+<path d="M947 515 V598"/><path d="M1215 625 H1122 V475 H1083"/><path d="M360 935 H500"/><path d="M650 873 V760 H615 V519"/>
+</g>
+<text x="954" y="556" fill="#C5AFDF" font-size="19" font-family="Arial">telemetría</text>
+<text x="1110" y="607" fill="#BDE4CD" font-size="19" font-family="Arial">permisos</text>
+<text x="57" y="847" fill="#D2F77E" font-size="23" font-family="Arial" font-weight="bold">DEPLOY / infraestructura como código</text>
+<text x="371" y="911" fill="#BDB1DA" font-size="19" font-family="Arial">CI / CD</text>
+<rect x="825" y="866" width="952" height="132" rx="12" fill="#332D1C" stroke="#E6C475" stroke-width="2"/>
+<text x="1301" y="915" fill="#F6E3AF" text-anchor="middle" font-size="25" font-family="Arial" font-weight="bold">LAB / DEMO ÚNICAMENTE</text>
+<text x="1301" y="950" fill="#EDE8CE" text-anchor="middle" font-size="22" font-family="Arial">API pública, solo datos ficticios · CORS no autentica</text>
+<text x="1301" y="981" fill="#EDE8CE" text-anchor="middle" font-size="22" font-family="Arial">No almacenar credenciales · Eliminar recursos al finalizar</text>
+</svg>

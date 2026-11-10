@@ -9,3 +9,18 @@ venv/
 !.env.example
 *.pem
 .DS_Store
+
+# Terraform
+**/.terraform/
+**/.terraform.lock.hcl.backup
+**/terraform.tfstate
+**/terraform.tfstate.*
+**/tfplan
+**/lambda.zip
+aws-demo/terraform/backend.tf
+aws-demo/terraform/*.tfvars
+!aws-demo/terraform/*.tfvars.example
+*.tfplan
+# NEVER commit AWS Academy temporary credentials
+aws-credentials/
+.aws/
