@@ -1,6 +1,6 @@
 # Serverless Computing — Ingeniería de Software II · ITBA
 
-Trabajo práctico del segundo cuatrimestre de 2026. Presentación HTML **interactiva** de 19 diapositivas para una exposición de **15 minutos**: 10 minutos de fundamentos y decisiones arquitectónicas, más 5 minutos de prueba de concepto. La explicación empieza **sin vendor**, compara alternativas y luego utiliza AWS como caso concreto.
+Trabajo práctico del segundo cuatrimestre de 2026. Presentación HTML **interactiva** de 21 diapositivas para una exposición de **15 minutos**: 10 minutos de fundamentos y decisiones arquitectónicas, más 5 minutos de prueba de concepto. La explicación empieza **sin vendor**, compara alternativas y luego utiliza AWS como caso concreto.
 
 ## Contenido
 
@@ -25,12 +25,12 @@ cd serverless-computing-is2
 python3 -m http.server 8000
 ```
 
-Abrir **http://localhost:8000**. Navegar con flechas o espacio. Las diapositivas 15–19 contienen la demo interactiva.
+Abrir **http://localhost:8000**. Navegar con flechas o espacio. Las diapositivas 17–21 contienen la demo interactiva.
 
 ## Demo: dos modos
 
 - **SIMULACIÓN**: funciona directamente en el navegador, sin AWS. Permite registrar participantes ficticios, listar, repetir un identificador para mostrar idempotencia, provocar un conflicto 409 y ejecutar una ráfaga controlada.
-- **AWS REAL**: los mismos botones invocan una API desplegada con API Gateway y Lambda, que persiste datos en DynamoDB. En la diapositiva 15 seleccionar AWS REAL y pegar el `ApiUrl` devuelto por el despliegue.
+- **AWS REAL**: los mismos botones invocan una API desplegada con API Gateway y Lambda, que persiste datos en DynamoDB. En la diapositiva 17 seleccionar AWS REAL y pegar el `ApiUrl` devuelto por el despliegue.
 
 Los resultados de la simulación **no son métricas de AWS**, y una prueba breve de 12 solicitudes no prueba escalabilidad ilimitada.
 
@@ -67,3 +67,7 @@ sam delete --stack-name itba-serverless-demo --region us-east-1
 ## Alcance
 
 El repo contiene todos los archivos de texto necesarios para la presentación web y el backend AWS. El PDF y las imágenes de respaldo pueden obtenerse por separado del paquete ZIP original compartido en el chat.
+
+
+## Cobertura ampliada del cómputo serverless (noviembre de 2026)
+La presentación separa **cómputo** (FaaS, contenedores que sirven requests, jobs/batch) de capacidades de **integración, workflow y BaaS**. La taxonomía es didáctica, no excluyente: un job puede ejecutarse en un contenedor. Se agregaron dos diapositivas conceptuales sin vendors; la implementación AWS y la demo interactiva siguen intactas. El guion conserva exactamente **10:00 de teoría + 5:00 de demo**. Las fuentes principales son el glosario CNCF y las guías actuales de Cloud Run, Azure Container Apps, Knative y AWS.

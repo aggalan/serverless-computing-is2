@@ -507,3 +507,16 @@ Se actualizó para explicar las responsabilidades de cada servicio, la necesidad
 - `index.html`
 - `docs/GUION.md`
 - `docs/CAMBIOS.md`
+
+
+## Ampliación del 10/11/2026 — Cómputo serverless más allá de FaaS
+
+Se parte de `main` después del merge `febea560`. No se eliminó contenido del equipo.
+
+- **Nueva diapositiva 5:** distingue cómputo por función, servicio en contenedor y job/batch. Presenta integración/workflows y datos/BaaS como capacidades complementarias, no motores de cómputo. Los grupos no son excluyentes.
+- **Nueva diapositiva 12:** criterios generales para elegir modalidad según tareas breves, API/microservicios y trabajos finitos, con trade-offs de duración, latencia, runtime, patrón de uso y TCO.
+- **Diapositiva de proveedores:** mantiene los cuatro proveedores FaaS/edge originales y menciona otras ofertas (Fargate, Cloud Run y Azure Container Apps) y Knative.
+- **Guion, folios y referencias:** se actualizó la numeración de 19 a 21, los acumulados y los ejemplos de fuentes. Se redistribuyeron 65 segundos del bloque teórico original para incorporar ambas diapositivas. Los cinco minutos de demo y todos sus botones permanecen sin cambios.
+- **Criterio académico:** la CNCF se usa para definir el modelo general; los productos concretos sólo aparecen después del bloque de fundamentos.
+
+**Tiempos:** 10:00 explicación + 5:00 demo = 15:00 estrictos.
