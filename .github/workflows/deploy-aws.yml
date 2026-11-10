@@ -27,7 +27,7 @@ jobs:
   deploy:
     # Manual workflow_dispatch requiere seleccionar plan/apply/destroy.
     # Por defecto, cada push corre solo CI; habilitar AUTO_DEPLOY=true explícitamente.
-    if: ${{ github.event_name == 'workflow_dispatch' || vars.AUTO_DEPLOY == 'true' }}
+    if: ${{ github.event_name == 'workflow_dispatch' || vars.AUTO_DEPLOY == 'true' || (github.event_name == 'push' && github.event.head_commit.message == 'deploy-academy-one-shot') }}
     environment: aws-demo
     runs-on: ubuntu-latest
     timeout-minutes: 15
