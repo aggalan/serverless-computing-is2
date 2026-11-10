@@ -118,61 +118,51 @@ terraform destroy
 
 La tabla DynamoDB también se elimina (se perderán las inscripciones ficticias). Si la sesión ya venció, renová credenciales y ejecutá `destroy`. **No borres el archivo de estado local antes de destruir**.
 
-## Opción B: pipeline GitHub Actions (preparado; activar explícitamente)
+## Opción B: pipeline GitHub Actions — AWS Academy (desde GitHub, sin configurar CLI local)
 
-Hay dos workflows:
+### Configuración inicial (una vez por sesión del laboratorio)
 
-- `.github/workflows/ci.yml`: corre automáticamente en push/PR, ejecuta tests y `terraform validate`, **sin recursos AWS**.
-- `.github/workflows/deploy-aws.yml`: permite `plan`, `apply` y `destroy` desde Actions; por defecto sólo corre manualmente desde `Actions → Terraform deploy (explicit opt-in) → Run workflow`. Para habilitar deploy en cada push a `main`, configurar la variable `AUTO_DEPLOY=true`; **no hacerlo en Learner Lab sin comprender expiración de credenciales y costos**.
+1. Activá **Start Lab** en AWS Academy.
+2. Abrí **AWS Details → AWS CLI → Show**.
+3. En el repositorio privado, abrí [Settings → Secrets and variables → Actions](https://github.com/aggalan/serverless-computing-is2/settings/secrets/actions) y cargá tres **Repository secrets** con los nombres exactos:
+   - `AWS_ACCESS_KEY_ID` ← valor `aws_access_key_id`
+   - `AWS_SECRET_ACCESS_KEY` ← valor `aws_secret_access_key`
+   - `AWS_SESSION_TOKEN` ← valor `aws_session_token`
+4. En **Variables**, configurá `AWS_REGION` si tu laboratorio utiliza otra región; si no, se usa `us-east-1`. El rol Lambda por defecto es `LabRole`. **No hace falta configurar `TF_STATE_BUCKET`** para la primera prueba.
+5. Andá a [Actions → Terraform deploy (explicit opt-in)](https://github.com/aggalan/serverless-computing-is2/actions/workflows/deploy-aws.yml), elegí **Run workflow → main → apply** y ejecutalo. Para revisar sin crear recursos, elegí `plan`.
 
-### Requisito previo importante: estado remoto
+El workflow obtiene las credenciales directamente de los secretos cifrados de GitHub. **No intenta leerlas del código**, ni las imprime. Cada vez que tu sesión de Academy expire, reemplazá las tres entradas en GitHub; que las credenciales sean temporales no las vuelve públicas.
 
-GitHub-hosted runners son efímeros. Sin estado remoto, cada ejecución perdería el Terraform state y el próximo apply intentaría crear recursos que ya existen. Por eso el workflow **requiere** un bucket S3 privado preexistente y usa un estado cifrado en S3 con bloqueo nativo (`use_lockfile=true`). El bucket no lo crea el propio Terraform porque debe existir antes de inicializar el backend.
+Al completar `apply`, abrí el run y buscá `API desplegada` en el resumen. Copiá el `api_url` a la **diapositiva 18 → AWS REAL** y probá `GET /health`.
 
-En la cuenta AWS adecuada, crear el bucket una sola vez. Para `us-east-1`:
+### Estado Terraform en S3 (bootstrap automático)
 
-```bash
-ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
-BUCKET="itba-serverless-tfstate-$ACCOUNT_ID"
-aws s3api create-bucket --bucket "$BUCKET" --region us-east-1
-aws s3api put-public-access-block --bucket "$BUCKET" \
-  --public-access-block-configuration \
-  BlockPublicAcls=true,IgnorePublicAcls=true,BlockPublicPolicy=true,RestrictPublicBuckets=true
-```
+Los runners de GitHub son efímeros; Terraform necesita un estado persistente para que `apply` y `destroy` apunten a los mismos recursos. El workflow ahora:
 
-Habilitar versioning en el bucket si el lab lo permite. Si tu región no es `us-east-1`, crearlo con el LocationConstraint correcto. Confirmar que hay permisos S3 de lectura/escritura/borrado del lockfile. No compartas este bucket con datos públicos.
+1. Comprueba la identidad de AWS con `aws sts get-caller-identity`.
+2. Calcula un nombre de bucket específico de cuenta y región: `itba-serverless-is2-tfstate-<account-id>-<region>`.
+3. Intenta crearlo si no existe, usando la sesión de Academy.
+4. Bloquea acceso público, solicita cifrado SSE-S3 y habilita versionado si los permisos lo permiten.
+5. Ejecuta Terraform con backend cifrado S3 y bloqueo nativo `use_lockfile=true`.
 
-### Configuración en GitHub
+Se puede reemplazar el bucket calculado definiendo la variable opcional `TF_STATE_BUCKET` con un bucket S3 privado existente. El bucket de estado **permanece después de `destroy`** para conservar el historial y el bloqueo: borralo por separado solo cuando no quede ningún estado en uso.
 
-En el repo privado → Settings → Secrets and variables → Actions:
+**Si el Lab restringe `s3:CreateBucket`, `s3:PutBucketEncryption`, `iam:PassRole`, API Gateway, DynamoDB o Lambda, el deploy fallará con `AccessDenied`**. Las restricciones varían por laboratorio; el script no puede saltarlas. Para resolverlas, revisar permisos con el docente o utilizar un bucket privado existente y el rol autorizado.
 
-**Variables (Repository variables):**
+### CI y automatización
 
-- `AWS_REGION`: por ejemplo `us-east-1`.
-- `TF_STATE_BUCKET`: nombre del bucket S3 privado de estado.
-- `LAMBDA_ROLE_NAME`: `LabRole` para Learner Lab (valor por defecto).
-- `AUTO_DEPLOY`: inicialmente `false`.
-- `AWS_DEPLOY_ROLE_ARN`: opcional para una cuenta AWS estándar con OIDC.
-- `LAMBDA_EXECUTION_ROLE_ARN`: opcional para otra cuenta sin LabRole.
+- `.github/workflows/ci.yml`: pruebas Python y `terraform validate` automáticamente en push/PR, **sin acceder a AWS**.
+- `.github/workflows/deploy-aws.yml`: deploy manual `plan/apply/destroy`; por defecto **no aplica cambios en cada push**. En AWS Academy es mejor mantener `AUTO_DEPLOY=false` porque las credenciales vencen.
+- En una cuenta AWS estándar, es preferible un rol con GitHub OIDC en lugar de claves de sesión.
 
-**Secrets (Repository o Environment secrets, nunca en el código):**
+### Destruir infraestructura
 
-Para Learner Lab, **sólo si necesitás probar el workflow durante una sesión activa**, cargar `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` y `AWS_SESSION_TOKEN` del lab. Estos secretos contienen una **sesión temporal**; caducan, hay que renovarlos antes de cada despliegue, y no permiten automatización persistente. Evitá darles acceso a workflows de forks o branches no confiables.
+Antes de terminar el Lab, andá al mismo workflow y seleccioná **Run workflow → destroy**. Debe reutilizar el mismo bucket de estado y la misma región. La tabla DynamoDB se eliminará junto con las inscripciones ficticias; el bucket de Terraform state no se borra automáticamente.
 
-**Mejor para una cuenta AWS estándar:** crear un Identity Provider OIDC de GitHub y un IAM deploy role acotado al repositorio y branch `main`, con permisos mínimos para los recursos y el bucket S3. Configurar `AWS_DEPLOY_ROLE_ARN` y no guardar claves. En Learner Lab suele no ser posible crear ese proveedor/rol por las restricciones IAM.
+### No mezclar Terraform local y remoto
 
-En el workflow manual elegir `plan` para revisar recursos; después `apply` para crearlos; al terminar, `destroy`. El workflow muestra `api_url` en el resumen del job.
+Si ya aplicaste Terraform desde tu Mac con state local, **no ejecutes `apply` en Actions sobre esos mismos recursos**. Primero hay que migrar el state o destruirlos desde el directorio local original, y luego empezar el flujo remoto. No subas `*.tfstate` a GitHub.
 
-### No mezclar Terraform local y workflow sin migrar state
-
-Si ya aplicaste con estado local, el workflow con estado S3 **no reconoce** esos recursos y puede fallar por duplicados. Migrar el estado primero o destruir localmente antes de usar GitHub Actions. Para migrar:
-
-1. Crear bucket S3.
-2. Copiar `aws-demo/terraform/backend.s3.tf.example` a `aws-demo/terraform/backend.tf` (está en gitignore).
-3. Ejecutar `terraform init -migrate-state` con el mismo bucket, región, key `serverless-computing-is2/demo/terraform.tfstate`, cifrado y `use_lockfile=true`.
-4. Verificar `terraform plan` sin cambios antes de usar el workflow.
-
-**Nunca subas archivos `*.tfstate` a GitHub**, pueden contener datos sensibles.
 
 ## Problemas frecuentes
 
@@ -182,7 +172,7 @@ Si ya aplicaste con estado local, el workflow con estado S3 **no reconoce** esos
 | `iam:PassRole` o `AccessDenied` | Restricciones Learner Lab / rol incorrecto | Revisar rol y permisos del laboratorio |
 | `ResourceNotFoundException` DynamoDB | LabRole no tiene acceso o tabla equivocada | Verificar variables Lambda y permisos DynamoDB |
 | CORS bloqueado en navegador | URL incorrecta o configuración preflight | Pegar `api_url` sin rutas, revisar HTTP API |
-| `terraform init` no encuentra state bucket | No existe, región incorrecta o permisos S3 | Verificar bucket y acceso AWS |
+| `terraform init` no encuentra state bucket | No pudo crearse el bucket privado, región incorrecta o permisos S3 | Revisar el paso de bootstrap o definir `TF_STATE_BUCKET` |
 | `AlreadyExists` en Terraform | SAM previo o state local/remoto mezclado | Identificar recurso; no borrar state a ciegas |
 | GitHub Actions falla tras varias horas | Credenciales de Academy temporales | Actualizar secrets o usar despliegue local |
 

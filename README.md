@@ -45,9 +45,17 @@ Los resultados de la simulación **no son métricas de AWS**, y una prueba breve
 - [CI de tests y validación](.github/workflows/ci.yml): corre en cada push/PR sin utilizar credenciales AWS.
 - [Deploy opcional con Terraform](.github/workflows/deploy-aws.yml): `plan/apply/destroy` manuales, estado remoto S3 y autenticación OIDC (cuenta estándar) o credenciales temporales (Learner Lab).
 
-### Inicio rápido con AWS Academy (recomendado)
+### AWS Academy: despliegue directo desde GitHub Actions
 
-En `AWS Details → AWS CLI → Show` copiá las credenciales temporales (incluido `aws_session_token`) a `~/.aws/credentials`, perfil `itba-academy`. No las subas al repositorio ni las pegues en una conversación.
+El pipeline toma las credenciales del Lab desde **GitHub Actions Secrets** (`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_SESSION_TOKEN`). No las guardes en archivos del repo, aunque roten. En cada sesión, copiá los tres valores de **AWS Details → AWS CLI → Show** a [Settings → Actions Secrets](https://github.com/aggalan/serverless-computing-is2/settings/secrets/actions).
+
+Luego: [Actions → Terraform deploy](https://github.com/aggalan/serverless-computing-is2/actions/workflows/deploy-aws.yml) → **Run workflow → main → apply**. El pipeline verifica la identidad, crea si está permitido un bucket S3 privado para Terraform state, despliega API Gateway + Lambda + DynamoDB, y comprueba `GET /health`. Copiá el `api_url` del resumen a la **diapositiva 18**, modo **AWS REAL**.
+
+El primer deploy puede fallar si AWS Academy limita `LabRole`, `iam:PassRole`, Lambda, DynamoDB o S3. Para limpiar elegí **Run workflow → destroy**, usando las mismas credenciales renovadas y el mismo estado. **El bucket S3 para state se conserva** y se limpia por separado cuando ya no se necesita.
+
+**Guía detallada:** [Deploy con Terraform y AWS Academy](docs/DESPLIEGUE_TERRAFORM_ACADEMY.md).
+
+### Alternativa local desde Mac
 
 ```bash
 export AWS_PROFILE=itba-academy
@@ -56,9 +64,7 @@ aws sts get-caller-identity
 bash aws-demo/scripts/deploy-academy.sh
 ```
 
-Copiá el `api_url` resultante en la diapositiva **18**, modo **AWS REAL**. Al terminar, en `aws-demo/terraform`, ejecutar `terraform destroy` para eliminar los recursos.
-
-**Importante:** el despliegue Terraform es una **alternativa al SAM existente** (no se reemplazó `template.yaml`). No se ha aplicado en una cuenta AWS desde este repositorio. Por defecto el workflow de GitHub NO despliega en cada push: el modo Academy usa sesiones efímeras e IAM restringido. Para habilitar despliegues persistentes se necesita un bucket S3 privado para state y una autenticación configurada; ver la guía.
+No mezcles estados locales con el mismo stack gestionado por el pipeline de GitHub. Terraform sigue siendo una **alternativa** al stack AWS SAM original.
 
 ## Alternativa original: AWS SAM
 

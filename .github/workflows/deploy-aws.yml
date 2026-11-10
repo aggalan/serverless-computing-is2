@@ -25,6 +25,7 @@ concurrency:
 
 jobs:
   deploy:
+    # Manual workflow_dispatch requiere seleccionar plan/apply/destroy.
     # Por defecto, cada push corre solo CI; habilitar AUTO_DEPLOY=true explícitamente.
     if: ${{ github.event_name == 'workflow_dispatch' || vars.AUTO_DEPLOY == 'true' }}
     environment: aws-demo
@@ -60,6 +61,19 @@ jobs:
           role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
 
       # Learner Lab: credenciales de sesión; deben renovarse al vencer.
+      - name: Check AWS Academy GitHub Secrets
+        if: ${{ vars.AWS_DEPLOY_ROLE_ARN == '' }}
+        env:
+          ACADEMY_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          ACADEMY_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          ACADEMY_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [[ -z "$ACADEMY_ACCESS_KEY_ID" || -z "$ACADEMY_SECRET_ACCESS_KEY" || -z "$ACADEMY_SESSION_TOKEN" ]]; then
+            echo "::error::Faltan Secrets AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY y/o AWS_SESSION_TOKEN. Configuralos en GitHub Settings → Secrets and variables → Actions."
+            exit 1
+          fi
+
       - name: AWS credentials (Academy session)
         if: ${{ vars.AWS_DEPLOY_ROLE_ARN == '' }}
         uses: aws-actions/configure-aws-credentials@v4
@@ -69,14 +83,34 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
 
-      - name: Verify AWS identity and private state bucket
+      - name: Verify account and bootstrap private S3 Terraform state
         run: |
-          if [[ -z "$TF_STATE_BUCKET" ]]; then
-            echo "::error::Configurar vars.TF_STATE_BUCKET con un bucket S3 privado y preexistente"
-            exit 1
-          fi
+          set -euo pipefail
           aws sts get-caller-identity
-          aws s3api head-bucket --bucket "$TF_STATE_BUCKET"
+          ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+          BUCKET="${TF_STATE_BUCKET:-itba-serverless-is2-tfstate-${ACCOUNT_ID}-${AWS_REGION}}"
+          echo "Terraform state bucket: $BUCKET (region $AWS_REGION)"
+          if ! aws s3api head-bucket --bucket "$BUCKET" 2>/dev/null; then
+            echo "State bucket not found or inaccessible; attempting creation..."
+            if [[ "$AWS_REGION" == "us-east-1" ]]; then
+              aws s3api create-bucket --bucket "$BUCKET" --region "$AWS_REGION"
+            else
+              aws s3api create-bucket --bucket "$BUCKET" --region "$AWS_REGION" \
+                --create-bucket-configuration "LocationConstraint=$AWS_REGION"
+            fi
+          fi
+          aws s3api head-bucket --bucket "$BUCKET"
+          aws s3api put-public-access-block --bucket "$BUCKET" \
+            --public-access-block-configuration \
+            'BlockPublicAcls=true,IgnorePublicAcls=true,BlockPublicPolicy=true,RestrictPublicBuckets=true'
+          aws s3api put-bucket-encryption --bucket "$BUCKET" \
+            --server-side-encryption-configuration \
+            '{"Rules":[{"ApplyServerSideEncryptionByDefault":{"SSEAlgorithm":"AES256"}}]}'
+          if ! aws s3api put-bucket-versioning --bucket "$BUCKET" \
+            --versioning-configuration Status=Enabled; then
+            echo "::warning::No se pudo habilitar versionado S3 para Terraform state; revisá permisos del Lab."
+          fi
+          echo "TF_STATE_BUCKET=$BUCKET" >> "$GITHUB_ENV"
 
       - name: Enable persistent remote Terraform state
         run: |
