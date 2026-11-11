@@ -1,8 +1,8 @@
 # Guion de exposición — Serverless Computing (v4)
 
-**Presentación:** 22 diapositivas, 10:00 de explicación + 5:00 de demo.
+**Presentación:** 23 diapositivas, 10:00 de explicación + 5:00 de demo.
 
-**Estructura:** 1–14 fundamentos generales sin vendors (incluye ejecución y portabilidad); 15 proveedores; 16–17 AWS como caso particular; 18–22 demostración interactiva.
+**Estructura:** 1–14 fundamentos generales sin vendors (incluye ejecución y portabilidad); 15 proveedores; 16–17 AWS como caso particular; 18–23 demostración interactiva (arquitectura en la 20).
 
 **Antes de la clase:** desplegar stack AWS SAM, copiar `ApiUrl`, verificar `GET /health` y `POST /registrations` desde el navegador. En simulación se puede ensayar sin AWS, pero no es la demostración real.
 
@@ -82,14 +82,18 @@ Comenzamos los cinco minutos prácticos. Antes de exponer el stack debe estar de
 
 Paso 1: escribir un nombre ficticio, pulsar POST /registrations y observar status 201 si es nuevo; luego GET /registrations para ver el registro persistido. El request_id es generado en el frontend y se guarda entre slides para mostrar la operación idempotente. En AWS REAL, DynamoDB almacena los datos, no la RAM de Lambda. Indicar tiempo de ida y vuelta desde navegador, no duración de Lambda.
 
-## 20. 02 / Reintentar sin duplicar el efecto. — 01:15 (acum. 13:00)
+## 20. Arquitectura AWS real de la demo. — 00:20 (acum. 12:05)
+
+Mostrar el diagrama nuevo de `docs/arquitectura-aws.drawio` usando su vista previa `docs/arquitectura-aws.svg`. Tras registrar una inscripción, explicar el camino navegador → API Gateway HTTP API → Lambda Python → DynamoDB. Lambda ejecuta la lógica, DynamoDB almacena el estado, CloudWatch contiene logs, e IAM LabRole habilita permisos. GitHub Actions ejecuta Terraform; S3 almacena el estado remoto de Terraform, no los registros. No usamos VPC ni EC2. El gráfico se puede ampliar con un clic. Puente para idempotencia del siguiente paso.
+
+## 21. 02 / Reintentar sin duplicar el efecto. — 01:05 (acum. 13:10)
 
 Paso 2: con el MISMO request_id y el MISMO nombre, repetir POST. Debe devolver 200 duplicate true sin escribir otro registro. Se usa DynamoDB PutItem con ConditionExpression attribute_not_exists(registration_id), que es atómica. Mostrar el conflicto intencional con otro nombre pero igual request_id: HTTP 409. Esto no significa exactly-once, sino efecto idempotente. Si empezaron aquí sin crear el primer registro, mostrar que se requiere crear uno antes.
 
-## 21. 03 / Cambiar la carga y observar las respuestas. — 01:15 (acum. 14:15)
+## 22. 03 / Cambiar la carga y observar las respuestas. — 01:05 (acum. 14:15)
 
 Paso 3: presionar RÁFAGA CONTROLADA 12 requests distribuidos en 3 grupos de 4; observar éxitos, errores, respuestas y tiempos RTT de navegador. Aclarar que una ráfaga de este tamaño no mide escalabilidad ni garantiza latencia. En AWS REAL, Lambda puede escalar concurrentemente, sujeto a reserved concurrency y throttling; DynamoDB responde a persistencia. Opcionalmente abrir CloudWatch luego para ver invocaciones agregadas.
 
-## 22. 04 / Verificar, observar y concluir. — 00:45 (acum. 15:00)
+## 23. 04 / Verificar, observar y concluir. — 00:45 (acum. 15:00)
 
 Último paso: mostrar que CloudWatch registra invocaciones/errores/duración del backend AWS, pero no garantizar que las métricas estén visibles inmediatamente. Clic Abrir CloudWatch abre la consola y luego se busca /aws/lambda/<nombre>. También se puede hacer GET desde la presentación para confirmar persistencia. La simulación puede limpiarse con botón. Cierre: elección de Serverless según atributos y TCO, no por moda. No confundir resultados simulados con datos reales.

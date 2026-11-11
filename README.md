@@ -1,6 +1,6 @@
 # Serverless Computing — Ingeniería de Software II · ITBA
 
-Trabajo práctico del segundo cuatrimestre de 2026. Presentación HTML **interactiva** de 22 diapositivas para una exposición de **15 minutos**: 10 minutos de fundamentos y decisiones arquitectónicas, más 5 minutos de prueba de concepto. La explicación empieza **sin vendor**, compara alternativas y luego utiliza AWS como caso concreto.
+Trabajo práctico del segundo cuatrimestre de 2026. Presentación HTML **interactiva** de 23 diapositivas para una exposición de **15 minutos**: 10 minutos de fundamentos y decisiones arquitectónicas, más 5 minutos de prueba de concepto. La explicación empieza **sin vendor**, compara alternativas y luego utiliza AWS como caso concreto.
 
 ## Contenido
 
@@ -25,7 +25,7 @@ cd serverless-computing-is2
 python3 -m http.server 8000
 ```
 
-Abrir **http://localhost:8000**. Navegar con flechas o espacio. Las diapositivas 18–22 contienen la demo interactiva.
+Abrir **http://localhost:8000**. Navegar con flechas o espacio. Las diapositivas 18–23 contienen la demo interactiva; la 20 muestra el nuevo diagrama editable de arquitectura AWS.
 
 ## Demo: dos modos
 
