@@ -81,6 +81,10 @@ resource "aws_apigatewayv2_stage" "default" {
   name        = "$default"
   auto_deploy = true
 
+  # Crear y publicar el stage recién cuando las rutas y el permiso de invocación existen.
+  # La propagación puede tomar segundos adicionales: el workflow reintenta /health.
+  depends_on = [aws_apigatewayv2_route.routes, aws_lambda_permission.api_gateway]
+
   default_route_settings {
     throttling_burst_limit = 30
     throttling_rate_limit  = 15

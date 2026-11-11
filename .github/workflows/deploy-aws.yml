@@ -140,22 +140,49 @@ jobs:
         if: ${{ github.event_name == 'push' || github.event.inputs.operation == 'apply' || github.event.inputs.operation == 'destroy' }}
         run: terraform apply -auto-approve -input=false tfplan
 
-      - name: Verify health after apply
+      - name: Verify health after apply (wait for route propagation)
         if: ${{ github.event_name == 'push' || github.event.inputs.operation == 'apply' }}
         run: |
+          set -euo pipefail
           URL=$(terraform output -raw api_url)
           URL="${URL%/}"
-          curl --fail --show-error --silent --max-time 15 "$URL/health"
-          echo
-          echo "Comprobando CORS con origen http://localhost:8000..."
-          CORS_HEADERS=$(curl --fail --show-error --silent --max-time 15 -D - -o /dev/null \
-            -H "Origin: http://localhost:8000" "$URL/health")
-          if ! echo "$CORS_HEADERS" | grep -Eqi '^access-control-allow-origin: ([*]|http://localhost:8000)'; then
-            echo "::error::La respuesta de /health no incluye Access-Control-Allow-Origin correcto"
-            echo "$CORS_HEADERS"
+          echo "Comprobando $URL/health (HTTP API puede tardar en publicar rutas)"
+          BODY=$(mktemp)
+          HEADERS=$(mktemp)
+          trap 'rm -f "$BODY" "$HEADERS"' EXIT
+          READY=false
+
+          for attempt in $(seq 1 15); do
+            STATUS=$(curl --silent --show-error --max-time 15 \
+              -H 'Origin: http://localhost:8000' \
+              -D "$HEADERS" -o "$BODY" -w '%{http_code}' \
+              "$URL/health" || true)
+            echo "Intento $attempt/15: HTTP ${STATUS:-sin respuesta}"
+            if [[ "$STATUS" == "200" ]] && grep -Eq '"ok"[[:space:]]*:[[:space:]]*true' "$BODY"; then
+              CORS_ORIGIN=$(tr -d '\r' < "$HEADERS" | grep -i '^access-control-allow-origin:' | tail -1 | sed 's/^[^:]*:[[:space:]]*//' || true)
+              if [[ "$CORS_ORIGIN" == "*" || "$CORS_ORIGIN" == "http://localhost:8000" ]]; then
+                READY=true
+                echo "GET /health y CORS OK"
+                cat "$BODY"
+                echo
+                break
+              fi
+              echo "La respuesta es 200 pero CORS todavía no está disponible."
+            fi
+            if [[ "$attempt" -lt 15 ]]; then sleep 5; fi
+          done
+
+          if [[ "$READY" != true ]]; then
+            echo "::error::API no lista luego de 15 intentos (HTTP $STATUS). Revisá stage, rutas e integración."
+            echo "Cuerpo de respuesta:"
+            head -c 1000 "$BODY" || true
+            echo
+            echo "Encabezados:"
+            head -c 2000 "$HEADERS" || true
+            echo
             exit 1
           fi
-          echo "CORS /health OK"
+
           echo "### API desplegada" >> "$GITHUB_STEP_SUMMARY"
           echo "URL: $URL" >> "$GITHUB_STEP_SUMMARY"
-          echo "CORS: GET /health permitido desde http://localhost:8000" >> "$GITHUB_STEP_SUMMARY"
+          echo "Health/CORS: OK" >> "$GITHUB_STEP_SUMMARY"

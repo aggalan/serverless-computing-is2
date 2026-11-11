@@ -183,3 +183,10 @@ Si ya aplicaste Terraform desde tu Mac con state local, **no ejecutes `apply` en
 - [Backend S3 con bloqueo nativo (HashiCorp)](https://developer.hashicorp.com/terraform/language/backend/s3)
 - [GitHub Actions OIDC con AWS](https://docs.github.com/en/actions/how-tos/secure-your-work/security-harden-deployments/oidc-in-aws)
 - [Credenciales temporales AWS (IAM)](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp_use-resources.html)
+
+
+## Nota de despliegue: HTTP 404 inmediatamente después de `terraform apply`
+
+El 11/11/2026 el stack creó correctamente 10 recursos, pero el primer chequeo `GET /health` recibió 404 aproximadamente **un segundo después de finalizar la creación de las rutas**. El workflow marcó la ejecución como fallida aunque `terraform apply` terminó bien. Es consistente con un despliegue automático del stage `$default` todavía no propagado; el log por sí solo no prueba la causa exacta.
+
+Se ajustó Terraform para crear el stage después de configurar rutas y permisos, y el workflow ahora reintenta `GET /health` con cabecera `Origin` durante hasta unos 70 segundos. Si persiste el fallo, informa el último código HTTP, encabezados y cuerpo de respuesta en lugar de ocultar el motivo. Para verificar el estado desde un navegador, usar `https://sua8l46ak3.execute-api.us-east-1.amazonaws.com/health`, no la raíz `/`. La URL cambia si se destruyen y recrean los recursos.
