@@ -39,6 +39,9 @@ Los resultados de la simulación **no son métricas de AWS**, y una prueba breve
 
 ![Arquitectura de la demo AWS](docs/arquitectura-aws.svg)
 
+El diagrama usa el estilo de AWS Architecture Icons (fondo blanco, contenedores AWS Cloud / Region e íconos oficiales), siguiendo la referencia de diagrama aportada. Distingue la ruta de ejecución (navegador → API Gateway → Lambda → DynamoDB) de la operación (CloudWatch, IAM, GitHub Actions, Terraform y state en S3). No muestra VPC ni EC2, porque no son parte de esta demo.
+
+
 - [Editar diagrama en draw.io](docs/arquitectura-aws.drawio) — abrilo con [app.diagrams.net](https://app.diagrams.net/).
 - [Guía completa: Terraform para AWS Academy + pipeline de GitHub Actions](docs/DESPLIEGUE_TERRAFORM_ACADEMY.md).
 - [Terraform (IaC)](aws-demo/terraform/main.tf): API Gateway HTTP API → Lambda (Python) → DynamoDB, con CloudWatch y `LabRole` existente.
