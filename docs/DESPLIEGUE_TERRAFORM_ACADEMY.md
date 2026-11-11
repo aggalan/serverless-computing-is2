@@ -190,3 +190,12 @@ Si ya aplicaste Terraform desde tu Mac con state local, **no ejecutes `apply` en
 El 11/11/2026 el stack creó correctamente 10 recursos, pero el primer chequeo `GET /health` recibió 404 aproximadamente **un segundo después de finalizar la creación de las rutas**. El workflow marcó la ejecución como fallida aunque `terraform apply` terminó bien. Es consistente con un despliegue automático del stage `$default` todavía no propagado; el log por sí solo no prueba la causa exacta.
 
 Se ajustó Terraform para crear el stage después de configurar rutas y permisos, y el workflow ahora reintenta `GET /health` con cabecera `Origin` durante hasta unos 70 segundos. Si persiste el fallo, informa el último código HTTP, encabezados y cuerpo de respuesta en lugar de ocultar el motivo. Para verificar el estado desde un navegador, usar `https://sua8l46ak3.execute-api.us-east-1.amazonaws.com/health`, no la raíz `/`. La URL cambia si se destruyen y recrean los recursos.
+
+
+## Diagnóstico destroy: 11/11/2026 (AWS Academy)
+
+En los runs `43113157741`, `43113378200` y `43113709942`, `destroy` no alcanzó a ejecutar `terraform init`: `aws s3api head-bucket` no pudo acceder al bucket privado de estado, y el workflow anterior intentó equivocadamente `s3:CreateBucket`. AWS devolvió un **AccessDenied con explicit deny** de la política `voc-cancel-cred`. Un explicit deny no puede sortearse modificando Terraform.
+
+**Acción:** volver a iniciar una sesión de AWS Academy Learner Lab, renovar los tres GitHub Secrets temporales (`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_SESSION_TOKEN`) y ejecutar de nuevo el workflow con `operation: destroy`. Si la política sigue bloqueando S3, los permisos los debe restaurar el laboratorio/docente: no crear otro bucket ni borrar el archivo de state. El backend de Terraform está en el bucket `itba-serverless-is2-tfstate-848989471466-us-east-1` con key `serverless-computing-is2/demo/terraform.tfstate` (si siguen usando esa misma cuenta y región).
+
+Se corrigió el pipeline para que **plan/destroy nunca creen ni reconfiguren el bucket**. Ahora el comando solo intenta crear un bucket cuando un primer `apply` recibe explícitamente 404, no cuando recibe 403/AccessDenied. Un error posterior en `terraform plan -destroy` por permisos de lectura o borrado también requerirá renovar/recuperar los permisos AWS.
